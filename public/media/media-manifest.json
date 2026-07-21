@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-21T04:00:31.816Z",
+  "generatedAt": "2026-07-21T07:33:13.819Z",
   "source": {
     "id": "video-main",
     "repositoryPath": "docs/IMG_4455.MP4",
@@ -12,13 +12,13 @@
     "duration": 1219.2667,
     "frameRate": 19.9997,
     "processing": {
-      "standard": "848px H.264 CRF 23, 20fps, AAC 96k, yuv420p, square pixels, faststart, top-right YOUKU mosaic",
+      "standard": "848px H.264 CRF 18, 20fps, AAC 96k, yuv420p, square pixels, faststart, top-right YOUKU mosaic",
       "low": "640px H.264 CRF 30/31, 20fps, AAC 64k, yuv420p, square pixels, faststart, top-right YOUKU mosaic"
     },
     "sources": {
       "standard": {
         "path": "/media/yu-chenghui-shuangshoujian.mp4",
-        "available": false
+        "bytes": 184049165
       },
       "low": {
         "path": "/media/yu-chenghui-shuangshoujian-low.mp4",

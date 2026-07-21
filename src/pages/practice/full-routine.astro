@@ -19,11 +19,11 @@ const description = '于承惠双手剑完整套路跟练页，从视频15:50整
 <BaseLayout title="整套跟练" {description} canonicalPath={path} imagePath="/media/posters/full-routine.webp" type="video.other" structuredData={[
   breadcrumbJsonLd(site, [{ name: '首页', path: '/' }, { name: '四段套路', path: '/routine/' }, { name: '整套跟练', path }]),
   learningResourceJsonLd(site, { name: '于承惠双手剑整套跟练', description, path }),
-  videoObjectJsonLd(site, { name: '于承惠双手剑完整套路', description, pagePath: path, contentPath: MAIN_VIDEO.publicSources.lowBandwidth, thumbnailPath: '/media/posters/full-routine.webp', duration: MAIN_VIDEO.duration, clips: MAIN_VIDEO_CHAPTERS.map((chapter) => ({ name: chapter.title, start: chapter.start, end: chapter.end, path })) }),
+  videoObjectJsonLd(site, { name: '于承惠双手剑完整套路', description, pagePath: path, contentPath: MAIN_VIDEO.publicSources.standard, thumbnailPath: '/media/posters/full-routine.webp', duration: MAIN_VIDEO.duration, clips: MAIN_VIDEO_CHAPTERS.map((chapter) => ({ name: chapter.title, start: chapter.start, end: chapter.end, path })) }),
 ]}>
   <div class="container"><Breadcrumbs items={[{ label: '四段套路', href: '/routine/' }, { label: '整套跟练' }]} /></div>
   <header class="section practice-header"><div class="container reading-column stack"><p class="eyebrow">完整演示</p><h1>整套跟练</h1><p class="lede">默认定位到 15:50 的整套演示。先以 0.5 倍速观察路线，再回到原速连贯演练。</p></div></header>
-  <section class="section practice-player"><div class="container"><LessonPlayer client:load title="双手剑整套演示" sources={{ lowBandwidth: MAIN_VIDEO.publicSources.lowBandwidth }} poster="/media/posters/full-routine.webp" segments={MAIN_VIDEO_CHAPTERS} initialSegmentId="full-routine" frameRate={MAIN_VIDEO.frameRate} /></div></section>
+  <section class="section practice-player"><div class="container"><LessonPlayer client:load title="双手剑整套演示" sources={{ standard: MAIN_VIDEO.publicSources.standard, lowBandwidth: MAIN_VIDEO.publicSources.lowBandwidth }} poster="/media/posters/full-routine.webp" segments={MAIN_VIDEO_CHAPTERS} initialSegmentId="full-routine" frameRate={MAIN_VIDEO.frameRate} /></div></section>
   <section class="section" aria-labelledby="chapters-title"><div class="container practice-grid"><div><p class="eyebrow">视频章节</p><h2 id="chapters-title">从讲解、分段到歌诀</h2></div><ol>{MAIN_VIDEO_CHAPTERS.map((chapter) => <li><a href={`?t=${chapter.start}#chapters-title`}><span>{formatPlayerTime(chapter.start)}</span>{chapter.title}</a></li>)}</ol></div></section>
   <section class="section transcript-band"><div class="container"><VideoTranscript segments={transcriptSegments} /></div></section>
 </BaseLayout>

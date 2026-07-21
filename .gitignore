@@ -20,6 +20,7 @@ coverage/
 
 # The 254 MB master stays local. Deployable derivatives in public/media are tracked.
 docs/IMG_4455.MP4
+public/media/yu-chenghui-shuangshoujian.mp4
 
 # Operating-system files
 .DS_Store

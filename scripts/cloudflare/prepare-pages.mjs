@@ -2,7 +2,10 @@ import { readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const mediaBaseUrl = process.env.PUBLIC_MEDIA_BASE_URL?.trim() ?? '';
-const videoFile = 'yu-chenghui-shuangshoujian-low.mp4';
+const videoFiles = {
+  standard: 'yu-chenghui-shuangshoujian.mp4',
+  low: 'yu-chenghui-shuangshoujian-low.mp4',
+};
 
 let mediaBase;
 try {
@@ -14,12 +17,13 @@ try {
 }
 
 const dist = path.resolve('dist');
-const distVideo = path.join(dist, 'media', videoFile);
 const manifestPath = path.join(dist, 'media', 'media-manifest.json');
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
 
-manifest.video.sources.low.path = new URL(videoFile, `${mediaBase.toString().replace(/\/+$/, '')}/`).toString();
+for (const [profile, videoFile] of Object.entries(videoFiles)) {
+  manifest.video.sources[profile].path = new URL(videoFile, `${mediaBase.toString().replace(/\/+$/, '')}/`).toString();
+  await rm(path.join(dist, 'media', videoFile), { force: true });
+}
 await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
-await rm(distVideo, { force: true });
 
-console.log(`[cloudflare] Pages 构建已移除视频；播放器使用 ${manifest.video.sources.low.path}`);
+console.log(`[cloudflare] Pages 构建已移除视频；播放器优先使用 ${manifest.video.sources.standard.path}`);

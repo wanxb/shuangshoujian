@@ -28,7 +28,7 @@ const manifest = {
     duration: mediaConfig.duration,
     frameRate: mediaConfig.frameRate,
     processing: {
-      standard: '848px H.264 CRF 23, 20fps, AAC 96k, yuv420p, square pixels, faststart, top-right YOUKU mosaic',
+      standard: '848px H.264 CRF 18, 20fps, AAC 96k, yuv420p, square pixels, faststart, top-right YOUKU mosaic',
       low: '640px H.264 CRF 30/31, 20fps, AAC 64k, yuv420p, square pixels, faststart, top-right YOUKU mosaic',
     },
     sources: {

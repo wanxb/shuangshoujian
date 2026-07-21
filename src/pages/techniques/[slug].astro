@@ -41,7 +41,7 @@ const description = `${entry.data.summary}${entry.data.definition}`;
     learningResourceJsonLd(site, { name: `双手剑${entry.data.title}法`, description, path, position: entry.data.order }),
     videoObjectJsonLd(site, {
       name: `${entry.data.title}法教学片段`, description, pagePath: path,
-      contentPath: MAIN_VIDEO.publicSources.lowBandwidth, thumbnailPath: imagePath,
+      contentPath: MAIN_VIDEO.publicSources.standard, thumbnailPath: imagePath,
       duration: MAIN_VIDEO.duration,
       clips: [{ name: activeVideoSegment.data.title, start: activeVideoSegment.data.start, end: activeVideoSegment.data.end, path }],
     }),
@@ -64,7 +64,7 @@ const description = `${entry.data.summary}${entry.data.definition}`;
       <LessonPlayer
         client:load
         title={`${entry.data.title}法`}
-        sources={{ lowBandwidth: MAIN_VIDEO.publicSources.lowBandwidth }}
+        sources={{ standard: MAIN_VIDEO.publicSources.standard, lowBandwidth: MAIN_VIDEO.publicSources.lowBandwidth }}
         poster={imagePath}
         segments={playerSegments}
         initialSegmentId={activeVideoSegment.id}

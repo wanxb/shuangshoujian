@@ -37,7 +37,7 @@ const description = `于承惠双手剑第${entry.data.actionNumber}式“${entr
   structuredData={[
     breadcrumbJsonLd(site, [{ name: '首页', path: '/' }, { name: '四段套路', path: '/routine/' }, { name: `第${entry.data.sectionNumber}段`, path: `/routine/section-${entry.data.sectionNumber}/` }, { name: entry.data.subtitleTitle, path }]),
     learningResourceJsonLd(site, { name: `双手剑第${entry.data.actionNumber}式 ${entry.data.subtitleTitle}`, description, path, position: entry.data.actionNumber }),
-    videoObjectJsonLd(site, { name: entry.data.subtitleTitle, description, pagePath: path, contentPath: MAIN_VIDEO.publicSources.lowBandwidth, thumbnailPath: `/media/posters/section-${entry.data.sectionNumber}.webp`, duration: MAIN_VIDEO.duration, clips: [{ name: entry.data.subtitleTitle, start: entry.data.start, end: entry.data.end, path }] }),
+    videoObjectJsonLd(site, { name: entry.data.subtitleTitle, description, pagePath: path, contentPath: MAIN_VIDEO.publicSources.standard, thumbnailPath: `/media/posters/section-${entry.data.sectionNumber}.webp`, duration: MAIN_VIDEO.duration, clips: [{ name: entry.data.subtitleTitle, start: entry.data.start, end: entry.data.end, path }] }),
   ]}
 >
   <div class="container"><Breadcrumbs items={[{ label: '四段套路', href: '/routine/' }, { label: `第${entry.data.sectionNumber}段`, href: `/routine/section-${entry.data.sectionNumber}/` }, { label: entry.data.subtitleTitle }]} /></div>
@@ -50,7 +50,7 @@ const description = `于承惠双手剑第${entry.data.actionNumber}式“${entr
 
   <section class="section action-player-section">
     <div class="container action-learning-grid">
-      <LessonPlayer client:load title={entry.data.subtitleTitle} sources={{ lowBandwidth: MAIN_VIDEO.publicSources.lowBandwidth }} poster={`/media/posters/section-${entry.data.sectionNumber}.webp`} segments={playerSegments} initialSegmentId={entry.id} frameRate={MAIN_VIDEO.frameRate} />
+      <LessonPlayer client:load title={entry.data.subtitleTitle} sources={{ standard: MAIN_VIDEO.publicSources.standard, lowBandwidth: MAIN_VIDEO.publicSources.lowBandwidth }} poster={`/media/posters/section-${entry.data.sectionNumber}.webp`} segments={playerSegments} initialSegmentId={entry.id} frameRate={MAIN_VIDEO.frameRate} />
       <aside class="group-directory" aria-labelledby="group-directory-title">
         <p class="eyebrow">同组动作</p><h2 id="group-directory-title">{group.data.title}</h2>
         <ol>{groupActions.map((action) => <li class:list={{ active: action.id === entry.id }}><a href={`/routine/actions/${action.id}/`} aria-current={action.id === entry.id ? 'page' : undefined}><span>{String(action.data.actionNumber).padStart(2, '0')}</span>{action.data.subtitleTitle}</a></li>)}</ol>

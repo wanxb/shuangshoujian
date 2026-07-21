@@ -88,7 +88,7 @@ const llms = await readFile(path.join(root, 'llms.txt'), 'utf8');
 expect(/<sitemapindex\b/.test(sitemapIndex), '内容 sitemap 索引格式不完整');
 expect(/<urlset\b/.test(sitemap), '内容 sitemap 格式不完整');
 expect(/<video:video>/.test(videoSitemap), '视频 sitemap 未包含视频条目');
-expect(videoSitemap.includes('yu-chenghui-shuangshoujian-low.mp4'), '视频 sitemap 未引用发布视频');
+expect(videoSitemap.includes('yu-chenghui-shuangshoujian.mp4'), '视频 sitemap 未引用高清发布视频');
 expect(llms.includes('朝鲜势法') && llms.includes('人物与资料'), 'llms.txt 缺少核心资料入口');
 
 const localBuild = canonicalOrigin.startsWith('http://localhost') || canonicalOrigin.startsWith('http://127.0.0.1');
@@ -105,13 +105,14 @@ const manifestPath = path.join(root, 'media', 'media-manifest.json');
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
 expect(manifest.source.includedInPublic === false, '媒体清单必须声明母版不进入 public');
 expect(manifest.source.rightsStatus === 'cleared', '教学视频权利状态必须为 cleared');
-const lowVideoSource = manifest.video.sources.low.path;
-const externalVideo = /^https:\/\//.test(lowVideoSource);
-if (!externalVideo) {
-  const lowVideoPath = path.join(root, ...lowVideoSource.replace(/^\//, '').split('/'));
-  expect(files.includes(lowVideoPath), '发布用低码率视频不存在');
-  if (files.includes(lowVideoPath)) {
-    expect((await stat(lowVideoPath)).size === manifest.video.sources.low.bytes, '发布视频大小与媒体清单不一致');
+const videoSources = Object.entries(manifest.video.sources);
+for (const [profile, source] of videoSources) {
+  if (!/^https:\/\//.test(source.path)) {
+    const videoPath = path.join(root, ...source.path.replace(/^\//, '').split('/'));
+    expect(files.includes(videoPath), `${profile} 发布视频不存在`);
+    if (files.includes(videoPath)) {
+      expect((await stat(videoPath)).size === source.bytes, `${profile} 视频大小与媒体清单不一致`);
+    }
   }
 }
 
@@ -121,7 +122,7 @@ expect(!/localStorage|sessionStorage|indexedDB|document\.cookie/.test(javascript
 
 const home = await readFile(path.join(root, 'index.html'), 'utf8');
 if (home.includes('来源与授权说明待补充')) blockers.push('PUBLIC_VIDEO_ATTRIBUTION 仍为占位文案');
-if (manifest.video.sources.standard.available !== true && !externalVideo) blockers.push('正式清晰度视频或媒体 CDN 尚未配置，仅有低带宽样片');
+if (manifest.video.sources.standard.available === false) blockers.push('正式清晰度视频尚未生成');
 
 console.log('[release candidate]', {
   htmlPages: htmlFiles.length,

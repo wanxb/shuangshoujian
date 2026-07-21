@@ -29,7 +29,9 @@
     "media:assets": "pnpm run media:images && pnpm run media:manifest",
     "media:dev": "node scripts/media/process-video.mjs && pnpm run media:assets",
     "media:production": "node scripts/media/process-video.mjs --production && pnpm run media:assets",
-    "deploy:r2": "npx --yes wrangler@4 r2 object put shuangshoujian/yu-chenghui-shuangshoujian-low.mp4 --file public/media/yu-chenghui-shuangshoujian-low.mp4 --content-type video/mp4 --remote",
+    "deploy:r2": "pnpm run deploy:r2:standard && pnpm run deploy:r2:low",
+    "deploy:r2:standard": "npx --yes wrangler@4 r2 object put shuangshoujian/yu-chenghui-shuangshoujian.mp4 --file public/media/yu-chenghui-shuangshoujian.mp4 --content-type video/mp4 --remote",
+    "deploy:r2:low": "npx --yes wrangler@4 r2 object put shuangshoujian/yu-chenghui-shuangshoujian-low.mp4 --file public/media/yu-chenghui-shuangshoujian-low.mp4 --content-type video/mp4 --remote",
     "deploy:pages": "pnpm run build:cloudflare && npx --yes wrangler@4 pages deploy dist --project-name shuangshoujian --branch main",
     "deploy": "pnpm run deploy:pages"
   },
