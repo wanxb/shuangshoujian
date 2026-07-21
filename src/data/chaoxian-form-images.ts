@@ -14,14 +14,12 @@ export const CHAOXIAN_FORM_IMAGE_FILES = [
   '21-lianchi.png', '22-youjia.png', '23-fengtou.png', '24-hengchong.png',
 ] as const;
 
-export function chaoxianFormImage(formNumber: number, formName: string) {
+export function chaoxianFormImage(formNumber: number) {
   const file = CHAOXIAN_FORM_IMAGE_FILES[formNumber - 1];
   const [width, height] = imageDimensions[formNumber - 1];
   return {
     path: `/media/classics/chaoxian-shifa/${file}`,
     width,
     height,
-    alt: `知乎文章所载《武备志·朝鲜势法》第${formNumber}势${formName}原图`,
-    caption: `${formName}原图 · 来源：知乎文章“茅元仪《武备志》朝鲜势法双手剑二十四势”`,
   };
 }

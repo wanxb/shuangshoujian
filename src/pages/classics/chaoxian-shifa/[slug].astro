@@ -22,7 +22,7 @@ const next = allForms[index + 1];
 const path = `/classics/chaoxian-shifa/${slugFor(entry.id)}/`;
 const site = Astro.site ?? new URL(SITE.url);
 const description = `《武备志·朝鲜势法》二十四势第${entry.data.formNumber}势“${entry.data.formName}”，含势法图、原文与标点。`;
-const formImage = chaoxianFormImage(entry.data.formNumber, entry.data.formName);
+const formImage = chaoxianFormImage(entry.data.formNumber);
 ---
 
 <BaseLayout title={`朝鲜势法第${entry.data.formNumber}势 ${entry.data.formName}`} {description} canonicalPath={path} type="article" structuredData={[
