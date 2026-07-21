@@ -1,0 +1,105 @@
+---
+import CourseMap from '../components/learning/CourseMap.astro';
+import LearningHero from '../components/learning/LearningHero.astro';
+import TechniqueStrip from '../components/learning/TechniqueStrip.astro';
+import { SITE } from '../data/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { courseJsonLd } from '../utils/structured-data';
+
+const site = Astro.site ?? new URL(SITE.url);
+---
+
+<BaseLayout structuredData={[courseJsonLd(site, { name: '于承惠双手剑入门课程', description: SITE.description, path: '/learn/', provider: SITE.name })]}>
+  <LearningHero />
+
+  <section class="section" aria-labelledby="path-title">
+    <div class="container stack section-heading">
+      <p class="eyebrow">初学路径</p>
+      <h2 id="path-title">从准备到整套，分四步学习</h2>
+      <p class="lede">不记录进度。每次来访都可以按当前需要，从任一环节重新进入。</p>
+    </div>
+    <div class="container course-map-wrap"><CourseMap /></div>
+  </section>
+
+  <section class="section technique-band" aria-labelledby="technique-title">
+    <div class="container stack">
+      <div class="section-heading">
+        <p class="eyebrow">基本技法</p>
+        <h2 id="technique-title">先认识双手剑二十法</h2>
+        <p class="lede">双手剑二十法构成基本术语；击、刺、格、洗四种主要剑法可进入慢放课程。</p>
+      </div>
+      <TechniqueStrip />
+      <a class="action-link action-link--secondary" href="/techniques/">查看二十法完整索引与原图</a>
+    </div>
+  </section>
+
+  <section class="section routine-feature" aria-labelledby="routine-title">
+    <div class="container routine-feature__grid">
+      <figure>
+        <img src="/media/posters/full-routine.webp" width="848" height="464" alt="于承惠演示双手剑完整套路" loading="lazy" />
+        <figcaption>整套演示影像截图</figcaption>
+      </figure>
+      <div class="stack">
+        <p class="eyebrow">四段四十式</p>
+        <h2 id="routine-title">按动作组拆开，再回到完整套路</h2>
+        <p>套路分为四段、十七个动作组。预备式单列，四十式从“并步接剑上挑”编号至“交手抱剑收势”。</p>
+        <a class="action-link" href="/routine/">查看四段套路</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section verse-band" aria-labelledby="verse-title">
+    <div class="container stack">
+      <div class="section-heading">
+        <p class="eyebrow">片尾文字</p>
+        <h2 id="verse-title">两篇歌诀，逐句对照影像</h2>
+      </div>
+      <div class="verse-band__grid">
+        <article>
+          <p class="verse-band__time">17:20 起</p>
+          <h3>《双手剑》单练行功歌诀</h3>
+          <blockquote>起手一剑祭苍茫<br />再施精诚礼万方</blockquote>
+          <a href="/koujue/xingong-koujue/">阅读全文与时间码</a>
+        </article>
+        <article>
+          <p class="verse-band__time">18:50 起</p>
+          <h3>特点与演练要诀歌（剑论）</h3>
+          <blockquote>天生人臂关节三<br />手执长锋四节添</blockquote>
+          <a href="/koujue/jianlun/">阅读全文与时间码</a>
+        </article>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section-heading { max-width: 48rem; }
+  .course-map-wrap { margin-top: var(--space-8); }
+  .technique-band { background: var(--color-surface-muted); }
+
+  .routine-feature__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(18rem, 5fr);
+    gap: var(--space-10);
+    align-items: center;
+  }
+
+  .routine-feature figure { margin: 0; }
+  .routine-feature img { width: 100%; aspect-ratio: 848 / 464; object-fit: cover; }
+  .routine-feature figcaption { margin-top: var(--space-2); color: var(--color-ink-soft); font-size: 0.8125rem; }
+  .routine-feature .action-link { justify-self: start; }
+
+  .verse-band { background: var(--color-ink); color: white; }
+  .verse-band h2, .verse-band h3, .verse-band blockquote { color: white; }
+  .verse-band .eyebrow { color: #e9aaa0; }
+  .verse-band__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-8); }
+  .verse-band__grid article { padding-block: var(--space-6); border-top: 1px solid #59605d; }
+  .verse-band__time { color: #c9cecb; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.8125rem; }
+  .verse-band blockquote { margin: var(--space-4) 0; font-family: 'Noto Serif SC', 'Songti SC', SimSun, serif; font-size: 1.25rem; line-height: 1.9; }
+  .verse-band a { color: #d5e5eb; font-weight: 700; }
+
+  @media (max-width: 47.9375rem) {
+    .routine-feature__grid,
+    .verse-band__grid { grid-template-columns: 1fr; }
+  }
+</style>

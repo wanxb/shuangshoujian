@@ -1,0 +1,41 @@
+---
+import { SITE } from '../../data/site';
+import { absoluteUrl, canonicalPath, serializeJsonLd, type SeoInput } from '../../utils/seo';
+
+interface Props extends SeoInput {
+  structuredData?: Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  canonicalPath: requestedCanonical,
+  imagePath = '/media/posters/home.webp',
+  noindex = false,
+  type = 'website',
+  structuredData = [],
+} = Astro.props;
+
+const site = Astro.site ?? new URL(SITE.url);
+const pageTitle = title === SITE.name ? title : `${title}｜${SITE.name}`;
+const canonical = absoluteUrl(canonicalPath(requestedCanonical), site);
+const image = absoluteUrl(imagePath, site);
+---
+
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:type" content={type} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={image} />
+<meta property="og:image:alt" content="于承惠双手剑教学影像" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={image} />
+{structuredData.map((data) => <script is:inline type="application/ld+json" set:html={serializeJsonLd(data)} />)}

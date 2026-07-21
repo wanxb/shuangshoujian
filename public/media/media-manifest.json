@@ -1,0 +1,117 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-21T04:00:31.816Z",
+  "source": {
+    "id": "video-main",
+    "repositoryPath": "docs/IMG_4455.MP4",
+    "includedInPublic": false,
+    "rightsStatus": "cleared"
+  },
+  "video": {
+    "id": "yu-chenghui-main",
+    "duration": 1219.2667,
+    "frameRate": 19.9997,
+    "processing": {
+      "standard": "848px H.264 CRF 23, 20fps, AAC 96k, yuv420p, square pixels, faststart, top-right YOUKU mosaic",
+      "low": "640px H.264 CRF 30/31, 20fps, AAC 64k, yuv420p, square pixels, faststart, top-right YOUKU mosaic"
+    },
+    "sources": {
+      "standard": {
+        "path": "/media/yu-chenghui-shuangshoujian.mp4",
+        "available": false
+      },
+      "low": {
+        "path": "/media/yu-chenghui-shuangshoujian-low.mp4",
+        "bytes": 32798952
+      }
+    }
+  },
+  "posters": [
+    {
+      "id": "home",
+      "time": 365.9,
+      "path": "/media/posters/home.webp",
+      "bytes": 31394
+    },
+    {
+      "id": "core-techniques",
+      "time": 300,
+      "path": "/media/posters/core-techniques.webp",
+      "bytes": 17040
+    },
+    {
+      "id": "section-1",
+      "time": 455,
+      "path": "/media/posters/section-1.webp",
+      "bytes": 10886
+    },
+    {
+      "id": "section-2",
+      "time": 655,
+      "path": "/media/posters/section-2.webp",
+      "bytes": 9820
+    },
+    {
+      "id": "section-3",
+      "time": 815,
+      "path": "/media/posters/section-3.webp",
+      "bytes": 9358
+    },
+    {
+      "id": "section-4",
+      "time": 845,
+      "path": "/media/posters/section-4.webp",
+      "bytes": 11780
+    },
+    {
+      "id": "full-routine",
+      "time": 958,
+      "path": "/media/posters/full-routine.webp",
+      "bytes": 11750
+    },
+    {
+      "id": "xingong-koujue",
+      "time": 1045,
+      "path": "/media/posters/xingong-koujue.webp",
+      "bytes": 29462
+    },
+    {
+      "id": "jianlun",
+      "time": 1132,
+      "path": "/media/posters/jianlun.webp",
+      "bytes": 28456
+    }
+  ],
+  "keyframes": [
+    {
+      "id": "technique-ji",
+      "time": 310,
+      "path": "/media/keyframes/technique-ji.webp",
+      "bytes": 14490
+    },
+    {
+      "id": "technique-ci",
+      "time": 326,
+      "path": "/media/keyframes/technique-ci.webp",
+      "bytes": 17536
+    },
+    {
+      "id": "technique-ge",
+      "time": 343,
+      "path": "/media/keyframes/technique-ge.webp",
+      "bytes": 18026
+    },
+    {
+      "id": "technique-xi",
+      "time": 369,
+      "path": "/media/keyframes/technique-xi.webp",
+      "bytes": 17038
+    },
+    {
+      "id": "action-01-start",
+      "time": 424,
+      "path": "/media/keyframes/action-01-start.webp",
+      "bytes": 13898
+    }
+  ]
+}

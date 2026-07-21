@@ -1,0 +1,14 @@
+{
+  "title": "第一段",
+  "summary": "第一段包含五个动作组；预备式单列，套路动作编号为 1-14。",
+  "editorialStatus": "needs-review",
+  "sourceIds": ["video-main"],
+  "updatedAt": "2026-07-20",
+  "authorLabel": "本站整理",
+  "noindex": false,
+  "sectionNumber": 1,
+  "order": 1,
+  "actionGroupIds": ["section-1-group-1", "section-1-group-2", "section-1-group-3", "section-1-group-4", "section-1-group-5"],
+  "start": 416,
+  "end": 549
+}

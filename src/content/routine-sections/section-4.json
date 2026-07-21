@@ -1,0 +1,14 @@
+{
+  "title": "第四段",
+  "summary": "第四段包含四个动作组，套路动作编号为 32-40。",
+  "editorialStatus": "needs-review",
+  "sourceIds": ["video-main"],
+  "updatedAt": "2026-07-20",
+  "authorLabel": "本站整理",
+  "noindex": false,
+  "sectionNumber": 4,
+  "order": 4,
+  "actionGroupIds": ["section-4-group-1", "section-4-group-2", "section-4-group-3", "section-4-group-4"],
+  "start": 832,
+  "end": 926
+}

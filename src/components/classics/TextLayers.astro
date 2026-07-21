@@ -1,0 +1,18 @@
+---
+interface Props { originalText: string; punctuatedText: string; }
+const { originalText, punctuatedText } = Astro.props;
+---
+
+<div class="text-layers">
+  <section aria-labelledby="original-text"><p class="text-layers__label">原文</p><h2 id="original-text" class="visually-hidden">原文</h2><blockquote>{originalText}</blockquote></section>
+  <section aria-labelledby="punctuated-text"><p class="text-layers__label">标点</p><h2 id="punctuated-text" class="visually-hidden">标点</h2><p>{punctuatedText}</p></section>
+</div>
+
+<style>
+  .text-layers { display: grid; gap: var(--space-8); }
+  .text-layers section { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: var(--space-5); padding-top: var(--space-5); border-top: 1px solid var(--color-line-strong); }
+  .text-layers__label { color: var(--color-vermilion-dark); font-size: 0.8125rem; font-weight: 800; }
+  .text-layers blockquote { margin: 0; font-family: 'Noto Serif SC', 'Songti SC', SimSun, serif; font-size: 1.25rem; line-height: 2; }
+  .text-layers section > p:last-child { max-width: 48rem; }
+  @media (max-width: 39.9375rem) { .text-layers section { grid-template-columns: 1fr; gap: var(--space-2); } }
+</style>

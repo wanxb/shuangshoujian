@@ -1,0 +1,70 @@
+---
+import { ArrowRight, PlayCircle } from 'lucide-react';
+import { SWORD_TECHNIQUE_GROUPS } from '../../data/sword-techniques';
+---
+
+<ol class="methods-grid" aria-label="双手剑二十法">
+  {SWORD_TECHNIQUE_GROUPS.flat().map((method, index) => (
+    <li class:list={['method-item', { 'method-item--lesson': method.lessonKey }]}>
+      <span class="method-item__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+      <div>
+        <h3>{method.name}</h3>
+        <p>{method.verse}</p>
+      </div>
+      {method.lessonKey && (
+        <a href={`/techniques/${method.lessonKey}/`} aria-label={`观看${method.name}法视频讲解`}>
+          <PlayCircle size={17} aria-hidden="true" />视频讲解<ArrowRight size={15} aria-hidden="true" />
+        </a>
+      )}
+    </li>
+  ))}
+</ol>
+
+<style>
+  .methods-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    border-top: 2px solid var(--color-ink);
+    list-style: none;
+  }
+
+  .method-item {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    gap: var(--space-3);
+    align-content: start;
+    padding: var(--space-5);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .method-item:nth-child(odd) { border-right: 1px solid var(--color-line); }
+  .method-item--lesson { background: var(--color-pine-soft); }
+
+  .method-item__number {
+    color: var(--color-vermilion-dark);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  .method-item h3 { font-size: 1.375rem; line-height: 1; }
+  .method-item p { margin-top: var(--space-2); color: var(--color-ink-soft); line-height: 1.75; }
+  .method-item a {
+    display: inline-flex;
+    min-height: 44px;
+    grid-column: 2;
+    align-items: center;
+    gap: var(--space-1);
+    justify-self: start;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  @media (max-width: 47.9375rem) {
+    .methods-grid { grid-template-columns: 1fr; }
+    .method-item:nth-child(odd) { border-right: 0; }
+  }
+</style>

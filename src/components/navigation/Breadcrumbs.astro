@@ -1,0 +1,69 @@
+---
+import { ChevronRight, Home } from 'lucide-react';
+
+export interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="breadcrumbs" aria-label="面包屑">
+  <ol>
+    <li>
+      <a href="/" aria-label="首页"><Home size={17} aria-hidden="true" /></a>
+    </li>
+    {
+      items.map((item, index) => (
+        <li>
+          <ChevronRight className="breadcrumbs__separator" size={16} aria-hidden="true" />
+          {item.href && index < items.length - 1 ? (
+            <a href={item.href}>{item.label}</a>
+          ) : (
+            <span aria-current="page">{item.label}</span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<style>
+  .breadcrumbs {
+    overflow-x: auto;
+    color: var(--color-ink-soft);
+    font-size: 0.875rem;
+    scrollbar-width: none;
+  }
+
+  .breadcrumbs ol,
+  .breadcrumbs li {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .breadcrumbs ol {
+    min-height: 2.75rem;
+    white-space: nowrap;
+  }
+
+  .breadcrumbs a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    color: inherit;
+  }
+
+  .breadcrumbs :global(.breadcrumbs__separator) {
+    margin-inline: var(--space-2);
+    color: var(--color-line-strong);
+  }
+</style>

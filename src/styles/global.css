@@ -1,0 +1,313 @@
+@layer reset, tokens, base, layout, components, utilities;
+
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+    text-size-adjust: 100%;
+  }
+
+  body,
+  h1,
+  h2,
+  h3,
+  p,
+  figure,
+  blockquote,
+  dl,
+  dd {
+    margin: 0;
+  }
+
+  img,
+  picture,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+}
+
+@layer tokens {
+  :root {
+    --color-ink: #171918;
+    --color-ink-soft: #4b514e;
+    --color-paper: #f7f7f4;
+    --color-surface: #ffffff;
+    --color-surface-muted: #eff1ed;
+    --color-vermilion: #a6382c;
+    --color-vermilion-dark: #7f291f;
+    --color-vermilion-soft: #f6e9e6;
+    --color-pine: #2f6255;
+    --color-pine-soft: #e5efeb;
+    --color-steel: #3f6678;
+    --color-steel-soft: #e7eef1;
+    --color-line: #d8dad5;
+    --color-line-strong: #a9ada7;
+    --color-warning: #7a5612;
+    --color-warning-soft: #f7efd9;
+    --shadow-toolbar: 0 6px 24px rgb(23 25 24 / 10%);
+    --radius-control: 4px;
+    --radius-card: 8px;
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --content-width: 75rem;
+    --reading-width: 46rem;
+    --header-height: 4rem;
+    --mobile-nav-height: 4.5rem;
+    --z-header: 40;
+    --z-mobile-nav: 50;
+  }
+}
+
+@layer base {
+  body {
+    min-width: 20rem;
+    min-height: 100dvh;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family:
+      'Noto Sans SC',
+      'Microsoft YaHei UI',
+      'PingFang SC',
+      system-ui,
+      sans-serif;
+    font-size: 1rem;
+    line-height: 1.65;
+    letter-spacing: 0;
+    text-rendering: optimizeLegibility;
+  }
+
+  a {
+    color: var(--color-steel);
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+  }
+
+  a:hover {
+    color: var(--color-vermilion-dark);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-steel);
+    outline-offset: 3px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    color: var(--color-ink);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: 0;
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+
+  ::selection {
+    background: var(--color-vermilion-soft);
+    color: var(--color-ink);
+  }
+
+  @media (min-width: 64rem) {
+    h1 { font-size: 3.5rem; }
+    h2 { font-size: 2.25rem; }
+  }
+}
+
+@layer layout {
+  .site-shell {
+    min-height: 100dvh;
+  }
+
+  .site-main {
+    min-height: calc(100dvh - var(--header-height));
+  }
+
+  .container {
+    width: min(calc(100% - 2rem), var(--content-width));
+    margin-inline: auto;
+  }
+
+  .reading-column {
+    width: min(100%, var(--reading-width));
+  }
+
+  .section {
+    padding-block: var(--space-12);
+  }
+
+  .section + .section {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .stack {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .cluster {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  @media (max-width: 56.1875rem) {
+    body {
+      padding-bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom));
+    }
+
+    .section {
+      padding-block: var(--space-10);
+    }
+  }
+
+  @media (max-width: 56.1875rem) and (orientation: landscape) and (max-height: 31.25rem) {
+    body {
+      padding-bottom: 0;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .container {
+      width: min(calc(100% - 3rem), var(--content-width));
+    }
+  }
+}
+
+@layer components {
+  .skip-link {
+    position: fixed;
+    z-index: 1000;
+    top: var(--space-3);
+    left: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-control);
+    background: var(--color-ink);
+    color: var(--color-surface);
+    transform: translateY(-200%);
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
+  .surface-card {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+
+  .eyebrow {
+    color: var(--color-vermilion-dark);
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  .lede {
+    max-width: 42rem;
+    color: var(--color-ink-soft);
+    font-size: 1.125rem;
+    line-height: 1.75;
+  }
+
+  .action-link {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid transparent;
+    border-radius: var(--radius-control);
+    background: var(--color-vermilion);
+    color: white;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    transition:
+      background-color 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .action-link:hover {
+    background: var(--color-vermilion-dark);
+    color: white;
+  }
+
+  .action-link--secondary {
+    border-color: var(--color-line-strong);
+    background: transparent;
+    color: var(--color-ink);
+  }
+
+  .action-link--secondary:hover {
+    border-color: var(--color-steel);
+    background: var(--color-steel-soft);
+    color: var(--color-ink);
+  }
+
+  .muted {
+    color: var(--color-ink-soft);
+  }
+}
+
+@layer utilities {
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

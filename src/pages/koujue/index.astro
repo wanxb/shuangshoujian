@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import { ArrowRight } from 'lucide-react';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import { SITE } from '../../data/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatPlayerTime } from '../../utils/player';
+import { articleJsonLd, breadcrumbJsonLd } from '../../utils/structured-data';
+
+const verses = (await getCollection('verses')).sort((a, b) => a.data.start - b.data.start);
+const site = Astro.site ?? new URL(SITE.url);
+const description = '于承惠双手剑教学视频片尾两篇歌诀：单练行功歌诀与特点及演练要诀歌（剑论），含逐句时间码。';
+---
+
+<BaseLayout title="双手剑歌诀与剑论" {description} structuredData={[
+  breadcrumbJsonLd(site, [{ name: '首页', path: '/' }, { name: '双手剑歌诀', path: '/koujue/' }]),
+  articleJsonLd(site, { headline: '双手剑歌诀与剑论', description, path: '/koujue/', author: SITE.editorLabel, dateModified: '2026-07-21' }),
+]}>
+  <div class="container"><Breadcrumbs items={[{ label: '双手剑歌诀' }]} /></div>
+  <header class="section verse-header"><div class="container reading-column stack"><p class="eyebrow">片尾两篇歌诀</p><h1>双手剑歌诀与剑论</h1><p class="lede">《双手剑》单练行功歌诀 58 句，特点与演练要诀歌（剑论）45 句。</p></div></header>
+  <section class="section verse-index"><div class="container verse-index__grid">
+    {verses.map((verse) => (
+      <article>
+        <img src={`/media/posters/${verse.id}.webp`} width="848" height="464" alt={`${verse.data.title}视频片尾画面`} />
+        <div class="verse-index__body">
+          <p>{formatPlayerTime(verse.data.start)}–{formatPlayerTime(verse.data.end)} · {verse.data.lines.length} 句</p>
+          <h2>{verse.data.title}</h2>
+          <blockquote>{verse.data.lines.slice(0, 2).map((line) => <span>{line.transcription}</span>)}</blockquote>
+          <a href={`/koujue/${verse.id}/`}>逐句阅读与播放<ArrowRight size={17} aria-hidden="true" /></a>
+        </div>
+      </article>
+    ))}
+  </div></section>
+</BaseLayout>
+
+<style>
+  .verse-header { padding-top: var(--space-8); }
+  .verse-index { background: var(--color-ink); }
+  .verse-index__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); }
+  .verse-index article { overflow: hidden; border: 1px solid #515754; border-radius: var(--radius-card); background: #222523; color: white; }
+  .verse-index img { width: 100%; aspect-ratio: 848 / 464; object-fit: cover; }
+  .verse-index__body { display: grid; gap: var(--space-3); padding: var(--space-6); }
+  .verse-index h2, .verse-index blockquote { color: white; }
+  .verse-index__body > p { color: #c9cecb; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.8125rem; }
+  .verse-index blockquote { display: grid; margin: 0; font-family: 'Noto Serif SC', 'Songti SC', SimSun, serif; font-size: 1.25rem; line-height: 1.8; }
+  .verse-index a { display: inline-flex; min-height: 44px; align-items: center; gap: var(--space-2); justify-self: start; color: #d5e5eb; font-weight: 700; }
+  @media (max-width: 47.9375rem) { .verse-index__grid { grid-template-columns: 1fr; } }
+</style>

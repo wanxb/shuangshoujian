@@ -1,0 +1,73 @@
+---
+import { getCollection } from 'astro:content';
+import ActionGroupList from '../../components/learning/ActionGroupList.astro';
+import IllustrationPair from '../../components/learning/IllustrationPair.astro';
+import ViewTabs from '../../components/learning/ViewTabs.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import { SITE } from '../../data/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { breadcrumbJsonLd, learningResourceJsonLd } from '../../utils/structured-data';
+
+export async function getStaticPaths() {
+  const sections = await getCollection('routineSections');
+  return sections.map((entry) => ({ params: { section: `section-${entry.data.sectionNumber}` }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const allGroups = await getCollection('actionGroups');
+const allActions = await getCollection('routineActions');
+const illustrations = await getCollection('illustrations');
+const groupIllustration = entry.data.sectionNumber === 1 ? illustrations.find((item) => item.id === 'section-1-group-1-sequence') : undefined;
+const groups = allGroups
+  .filter((group) => group.data.sectionNumber === entry.data.sectionNumber)
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((group) => ({
+    id: group.id,
+    title: group.data.title,
+    number: group.data.groupNumber,
+    start: group.data.start,
+    end: group.data.end,
+    actions: group.data.actionIds.map((id) => {
+      const action = allActions.find((item) => item.id === id)!;
+      return { id: action.id, title: action.data.subtitleTitle, number: action.data.actionNumber, start: action.data.start, end: action.data.end };
+    }),
+  }));
+const path = `/routine/section-${entry.data.sectionNumber}/`;
+const site = Astro.site ?? new URL(SITE.url);
+const description = `${entry.data.title}分组教学，共${groups.length}个动作组、${groups.reduce((sum, group) => sum + group.actions.length, 0)}个编号动作，按教学影像顺序整理。`;
+---
+
+<BaseLayout
+  title={`双手剑${entry.data.title}`}
+  {description}
+  canonicalPath={path}
+  imagePath={`/media/posters/section-${entry.data.sectionNumber}.webp`}
+  structuredData={[
+    breadcrumbJsonLd(site, [{ name: '首页', path: '/' }, { name: '四段套路', path: '/routine/' }, { name: entry.data.title, path }]),
+    learningResourceJsonLd(site, { name: `于承惠双手剑${entry.data.title}`, description, path, position: entry.data.order }),
+  ]}
+>
+  <div class="container"><Breadcrumbs items={[{ label: '四段套路', href: '/routine/' }, { label: entry.data.title }]} /></div>
+  <header class="section section-header">
+    <div class="container section-header__grid">
+      <div class="stack"><p class="eyebrow">四段套路 · {String(entry.data.sectionNumber).padStart(2, '0')}</p><h1>{entry.data.title}</h1><p class="lede">{entry.data.summary}</p></div>
+      <img src={`/media/posters/section-${entry.data.sectionNumber}.webp`} width="848" height="464" alt={`于承惠示范双手剑${entry.data.title}`} />
+    </div>
+  </header>
+
+  <div class="container"><ViewTabs label="段落切换" items={[1, 2, 3, 4].map((number) => ({ label: `第${number}段`, href: `/routine/section-${number}/`, active: number === entry.data.sectionNumber }))} /></div>
+
+  {groupIllustration?.data.path && <section class="section group-illustration"><div class="container stack"><div class="reading-column stack"><p class="eyebrow">动作顺序</p><h2>{groupIllustration.data.title}</h2></div><IllustrationPair path={groupIllustration.data.path} mirroredPath={groupIllustration.data.mirroredPath} alt={groupIllustration.data.alt} caption={groupIllustration.data.caption} width={groupIllustration.data.width ?? 1600} height={groupIllustration.data.height ?? 620} /></div></section>}
+
+  <section class="section">
+    <div class="container"><ActionGroupList groups={groups} /></div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section-header { padding-top: var(--space-8); }
+  .section-header__grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(20rem, 7fr); gap: var(--space-10); align-items: center; }
+  .section-header img { width: 100%; aspect-ratio: 848 / 464; object-fit: cover; }
+  .group-illustration { background: var(--color-surface-muted); }
+  @media (max-width: 47.9375rem) { .section-header__grid { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,117 @@
+---
+import { getCollection } from 'astro:content';
+import LessonPlayer from '../../components/learning/LessonPlayer';
+import IllustrationPair from '../../components/learning/IllustrationPair.astro';
+import VideoTranscript from '../../components/media/VideoTranscript.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import { MAIN_VIDEO } from '../../data/video-manifest';
+import { SITE } from '../../data/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { breadcrumbJsonLd, imageObjectJsonLd, learningResourceJsonLd, videoObjectJsonLd } from '../../utils/structured-data';
+
+export async function getStaticPaths() {
+  const techniques = await getCollection('techniques');
+  return techniques
+    .filter((entry) => entry.data.category === 'core-technique')
+    .map((entry) => ({ params: { slug: entry.data.key }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const videoSegments = (await getCollection('videoSegments'))
+  .filter((segment) => segment.id.startsWith('technique-'))
+  .sort((a, b) => a.data.start - b.data.start);
+const activeVideoSegment = videoSegments.find((segment) => segment.id === entry.data.videoSegmentId)!;
+const illustrations = await getCollection('illustrations');
+const illustration = illustrations.find((item) => entry.data.illustrationIds.includes(item.id));
+const playerSegments = videoSegments.map((segment) => ({ id: segment.id, title: segment.data.title, start: segment.data.start, end: segment.data.end }));
+const site = Astro.site ?? new URL(SITE.url);
+const path = `/techniques/${entry.data.key}/`;
+const imagePath = `/media/keyframes/technique-${entry.data.key}.webp`;
+const description = `${entry.data.summary}${entry.data.definition}`;
+---
+
+<BaseLayout
+  title={`双手剑${entry.data.title}法`}
+  {description}
+  canonicalPath={path}
+  imagePath={imagePath}
+  type="video.other"
+  structuredData={[
+    breadcrumbJsonLd(site, [{ name: '首页', path: '/' }, { name: '基本技法', path: '/techniques/' }, { name: entry.data.title, path }]),
+    learningResourceJsonLd(site, { name: `双手剑${entry.data.title}法`, description, path, position: entry.data.order }),
+    videoObjectJsonLd(site, {
+      name: `${entry.data.title}法教学片段`, description, pagePath: path,
+      contentPath: MAIN_VIDEO.publicSources.lowBandwidth, thumbnailPath: imagePath,
+      duration: MAIN_VIDEO.duration,
+      clips: [{ name: activeVideoSegment.data.title, start: activeVideoSegment.data.start, end: activeVideoSegment.data.end, path }],
+    }),
+    ...(illustration?.data.path ? [imageObjectJsonLd(site, { name: illustration.data.title, description: illustration.data.caption, path: illustration.data.path, width: illustration.data.width ?? 1024, height: illustration.data.height ?? 560, credit: '本站整理' })] : []),
+  ]}
+>
+  <div class="container"><Breadcrumbs items={[{ label: '基本技法', href: '/techniques/' }, { label: entry.data.title }]} /></div>
+  <header class="section technique-lesson-header">
+    <div class="container">
+      <div class="stack">
+        <p class="eyebrow">四种主要剑法 · {String(entry.data.order).padStart(2, '0')}</p>
+        <h1>{entry.data.title}</h1>
+        <p class="lede">{entry.data.definition}</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="section player-section" aria-label={`${entry.data.title}法视频课程`}>
+    <div class="container">
+      <LessonPlayer
+        client:load
+        title={`${entry.data.title}法`}
+        sources={{ lowBandwidth: MAIN_VIDEO.publicSources.lowBandwidth }}
+        poster={imagePath}
+        segments={playerSegments}
+        initialSegmentId={activeVideoSegment.id}
+        frameRate={MAIN_VIDEO.frameRate}
+      />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="observe-title">
+    <div class="container lesson-details">
+      <div class="stack">
+        <p class="eyebrow">慢放观察</p>
+        <h2 id="observe-title">动作要点</h2>
+        <ol>{entry.data.keyPoints.map((point) => <li>{point}</li>)}</ol>
+      </div>
+      <figure>
+        <img src={imagePath} width="848" height="464" alt={`于承惠示范${entry.data.title}法的关键帧`} loading="lazy" />
+        <figcaption>{activeVideoSegment.data.title} · {activeVideoSegment.data.start}–{activeVideoSegment.data.end} 秒</figcaption>
+      </figure>
+      <div class="stack common-issues">
+        <p class="eyebrow">自查</p>
+        <h2>常见问题</h2>
+        <ul>{entry.data.commonIssues.map((issue) => <li>{issue}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section transcript-section">
+    <div class="container">
+      <VideoTranscript segments={[{ id: activeVideoSegment.id, title: activeVideoSegment.data.title, start: activeVideoSegment.data.start, transcript: activeVideoSegment.data.transcript }]} heading={`${entry.data.title}法视频文字稿`} />
+    </div>
+  </section>
+  {illustration?.data.path && <section class="section illustration-section"><div class="container stack"><div class="section-heading"><p class="eyebrow">剑路示意</p><h2>{illustration.data.title}</h2></div><IllustrationPair path={illustration.data.path} mirroredPath={illustration.data.mirroredPath} alt={illustration.data.alt} caption={illustration.data.caption} width={illustration.data.width ?? 1024} height={illustration.data.height ?? 560} /></div></section>}
+</BaseLayout>
+
+<style>
+  .technique-lesson-header { padding-top: var(--space-8); }
+  .player-section { padding-top: 0; }
+  .lesson-details { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-10); align-items: start; }
+  .lesson-details ol, .lesson-details ul { display: grid; gap: var(--space-3); margin: 0; padding-left: 1.25rem; }
+  .lesson-details figure { margin: 0; }
+  .lesson-details img { width: 100%; aspect-ratio: 848 / 464; object-fit: cover; }
+  .lesson-details figcaption { margin-top: var(--space-2); color: var(--color-ink-soft); font-size: 0.8125rem; }
+  .common-issues { padding-top: var(--space-6); border-top: 1px solid var(--color-line); }
+  .transcript-section { background: var(--color-surface-muted); }
+  .illustration-section { background: var(--color-pine-soft); }
+  @media (max-width: 47.9375rem) {
+    .lesson-details { grid-template-columns: 1fr; }
+  }
+</style>

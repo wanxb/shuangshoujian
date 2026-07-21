@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import { ExternalLink } from 'lucide-react';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import { SITE } from '../../data/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { articleJsonLd, breadcrumbJsonLd } from '../../utils/structured-data';
+
+const sources = await getCollection('sources');
+const levelOrder = ['original-video', 'primary-text', 'publication', 'modern-interpretation', 'editorial-illustration'];
+const levelLabels: Record<string, string> = { 'original-video': '原始影像', 'primary-text': '古籍原文', publication: '出版资料', 'modern-interpretation': '现代考释', 'editorial-illustration': '编辑示意' };
+const grouped = levelOrder.map((level) => ({ level, items: sources.filter((source) => source.data.sourceLevel === level) })).filter((group) => group.items.length);
+const site = Astro.site ?? new URL(SITE.url);
+const description = '于承惠双手剑使用的人物、视频、古籍与现代研究资料。';
+---
+
+<BaseLayout title="人物与资料" {description} imagePath="/media/portraits/yu-chenghui.webp" type="article" structuredData={[
+  breadcrumbJsonLd(site, [{ name: '首页', path: '/' }, { name: '人物与资料', path: '/sources/' }]),
+  articleJsonLd(site, { headline: '人物与资料', description, path: '/sources/', author: SITE.editorLabel, dateModified: '2026-07-21' }),
+]}>
+  <div class="container"><Breadcrumbs items={[{ label: '人物与资料' }]} /></div>
+  <header class="section sources-header"><div class="container sources-header__grid"><div class="stack"><p class="eyebrow">人物与资料</p><h1>人物与资料</h1><p class="lede">教学影像、古籍、出版资料与现代研究文章。</p></div><a class="person-entry" href="/person/yu-chenghui/"><img src="/media/portraits/yu-chenghui.webp" width="1272" height="696" alt="于承惠正面人物像" /><span><strong>于承惠</strong><small>生平与双手剑创传资料</small></span></a></div></header>
+
+  <section class="section" aria-labelledby="registry-title"><div class="container stack"><div class="reading-column stack"><p class="eyebrow">资料目录</p><h2 id="registry-title">当前使用的资料</h2></div><div class="source-registry">{grouped.map((group) => <section><h3>{levelLabels[group.level]}</h3><ul>{group.items.map((source) => <li><strong>{source.data.title}</strong>{source.data.author && <p>作者：{source.data.author}</p>}{source.data.publisher && <p>出版/平台：{source.data.publisher}{source.data.year ? `，${source.data.year}` : ''}</p>}{source.data.url && <a href={source.data.url} rel="noreferrer">查看原页面<ExternalLink size={14} aria-hidden="true" /></a>}</li>)}</ul></section>)}</div></div></section>
+</BaseLayout>
+
+<style>
+  .sources-header { padding-top: var(--space-8); }
+  .sources-header__grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(20rem, 2fr); gap: var(--space-10); align-items: center; }
+  .person-entry { display: grid; overflow: hidden; border: 1px solid var(--color-line); border-radius: var(--radius-card); background: var(--color-surface); color: var(--color-ink); text-decoration: none; }
+  .person-entry img { display: block; width: 100%; height: auto; aspect-ratio: 848 / 464; object-fit: cover; }
+  .person-entry > span { display: grid; padding: var(--space-4); }
+  .person-entry small { color: var(--color-ink-soft); }
+  .source-registry { display: grid; gap: var(--space-10); }
+  .source-registry section { display: grid; grid-template-columns: minmax(10rem, 1fr) minmax(0, 3fr); gap: var(--space-8); }
+  .source-registry h3 { font-size: 1.25rem; }
+  .source-registry ul { display: grid; margin: 0; padding: 0; border-top: 2px solid var(--color-ink); list-style: none; }
+  .source-registry li { display: grid; gap: var(--space-2); padding-block: var(--space-5); border-bottom: 1px solid var(--color-line); }
+  .source-registry li p { color: var(--color-ink-soft); }
+  .source-registry li a { display: inline-flex; min-height: 44px; align-items: center; gap: var(--space-1); justify-self: start; font-weight: 700; }
+  @media (max-width: 47.9375rem) { .sources-header__grid, .source-registry section { grid-template-columns: 1fr; } }
+</style>

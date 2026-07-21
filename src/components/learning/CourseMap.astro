@@ -1,0 +1,82 @@
+---
+import { ArrowRight } from 'lucide-react';
+import { LEARNING_PATH } from '../../data/learning-path';
+---
+
+<div class="course-map">
+  {LEARNING_PATH.map((item) => (
+    <article class="course-map__item">
+      <span class="course-map__number" aria-hidden="true">{item.number}</span>
+      <div>
+        <h3>{item.title}</h3>
+        <p>{item.description}</p>
+        <a href={item.href}>{item.linkLabel}<ArrowRight size={17} aria-hidden="true" /></a>
+      </div>
+    </article>
+  ))}
+</div>
+
+<style>
+  .course-map {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--color-line-strong);
+  }
+
+  .course-map__item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-4);
+    padding: var(--space-6) var(--space-5);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .course-map__item + .course-map__item {
+    border-left: 1px solid var(--color-line);
+  }
+
+  .course-map__number {
+    color: var(--color-vermilion-dark);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-weight: 700;
+  }
+
+  .course-map__item h3 {
+    font-size: 1.0625rem;
+  }
+
+  .course-map__item p {
+    margin-top: var(--space-2);
+    color: var(--color-ink-soft);
+    font-size: 0.9375rem;
+  }
+
+  .course-map__item a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+    font-weight: 700;
+  }
+
+  @media (max-width: 63.9375rem) {
+    .course-map {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .course-map__item:nth-child(3) {
+      border-left: 0;
+    }
+  }
+
+  @media (max-width: 39.9375rem) {
+    .course-map {
+      grid-template-columns: 1fr;
+    }
+
+    .course-map__item + .course-map__item {
+      border-left: 0;
+    }
+  }
+</style>

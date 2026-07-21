@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import LessonPlayer from '../../components/learning/LessonPlayer';
+import VideoTranscript from '../../components/media/VideoTranscript.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import { MAIN_VIDEO, MAIN_VIDEO_CHAPTERS } from '../../data/video-manifest';
+import { SITE } from '../../data/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatPlayerTime } from '../../utils/player';
+import { breadcrumbJsonLd, learningResourceJsonLd, videoObjectJsonLd } from '../../utils/structured-data';
+
+const chapters = await getCollection('videoSegments');
+const transcriptSegments = chapters.filter((entry) => entry.id.startsWith('chapter-')).sort((a, b) => a.data.start - b.data.start).map((entry) => ({ id: entry.id, title: entry.data.title, start: entry.data.start, transcript: entry.data.transcript }));
+const site = Astro.site ?? new URL(SITE.url);
+const path = '/practice/full-routine/';
+const description = '于承惠双手剑完整套路跟练页，从视频15:50整套演示开始，支持慢放、镜像、逐帧和循环。';
+---
+
+<BaseLayout title="整套跟练" {description} canonicalPath={path} imagePath="/media/posters/full-routine.webp" type="video.other" structuredData={[
+  breadcrumbJsonLd(site, [{ name: '首页', path: '/' }, { name: '四段套路', path: '/routine/' }, { name: '整套跟练', path }]),
+  learningResourceJsonLd(site, { name: '于承惠双手剑整套跟练', description, path }),
+  videoObjectJsonLd(site, { name: '于承惠双手剑完整套路', description, pagePath: path, contentPath: MAIN_VIDEO.publicSources.lowBandwidth, thumbnailPath: '/media/posters/full-routine.webp', duration: MAIN_VIDEO.duration, clips: MAIN_VIDEO_CHAPTERS.map((chapter) => ({ name: chapter.title, start: chapter.start, end: chapter.end, path })) }),
+]}>
+  <div class="container"><Breadcrumbs items={[{ label: '四段套路', href: '/routine/' }, { label: '整套跟练' }]} /></div>
+  <header class="section practice-header"><div class="container reading-column stack"><p class="eyebrow">完整演示</p><h1>整套跟练</h1><p class="lede">默认定位到 15:50 的整套演示。先以 0.5 倍速观察路线，再回到原速连贯演练。</p></div></header>
+  <section class="section practice-player"><div class="container"><LessonPlayer client:load title="双手剑整套演示" sources={{ lowBandwidth: MAIN_VIDEO.publicSources.lowBandwidth }} poster="/media/posters/full-routine.webp" segments={MAIN_VIDEO_CHAPTERS} initialSegmentId="full-routine" frameRate={MAIN_VIDEO.frameRate} /></div></section>
+  <section class="section" aria-labelledby="chapters-title"><div class="container practice-grid"><div><p class="eyebrow">视频章节</p><h2 id="chapters-title">从讲解、分段到歌诀</h2></div><ol>{MAIN_VIDEO_CHAPTERS.map((chapter) => <li><a href={`?t=${chapter.start}#chapters-title`}><span>{formatPlayerTime(chapter.start)}</span>{chapter.title}</a></li>)}</ol></div></section>
+  <section class="section transcript-band"><div class="container"><VideoTranscript segments={transcriptSegments} /></div></section>
+</BaseLayout>
+
+<style>
+  .practice-header { padding-top: var(--space-8); }
+  .practice-player { padding-top: 0; }
+  .practice-grid { display: grid; grid-template-columns: minmax(15rem, 1fr) minmax(0, 2fr); gap: var(--space-10); align-items: start; }
+  .practice-grid ol { margin: 0; padding: 0; border-top: 2px solid var(--color-ink); list-style: none; }
+  .practice-grid a { display: grid; grid-template-columns: 5rem minmax(0, 1fr); min-height: 3.5rem; align-items: center; border-bottom: 1px solid var(--color-line); color: var(--color-ink); font-weight: 700; text-decoration: none; }
+  .practice-grid a span { color: var(--color-steel); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.8125rem; }
+  .transcript-band { background: var(--color-surface-muted); }
+  @media (max-width: 47.9375rem) { .practice-grid { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,18 @@
+---
+interface Props { path: string; mirroredPath?: string; alt: string; caption: string; width: number; height: number; }
+const { path, mirroredPath, alt, caption, width, height } = Astro.props;
+---
+
+<div class="illustration-pair">
+  <figure><img src={path} {width} {height} alt={alt} loading="lazy" /><figcaption>{caption}</figcaption></figure>
+  {mirroredPath && <details><summary>查看镜像视角</summary><figure><img src={mirroredPath} {width} {height} alt={`${alt}，镜像视角`} loading="lazy" /><figcaption>镜像视角，左右已反转；文字标签保持正常阅读方向。</figcaption></figure></details>}
+</div>
+
+<style>
+  .illustration-pair { display: grid; gap: var(--space-4); }
+  .illustration-pair figure { margin: 0; }
+  .illustration-pair img { width: 100%; height: auto; border: 1px solid var(--color-line); background: var(--color-paper); }
+  .illustration-pair figcaption { margin-top: var(--space-2); color: var(--color-ink-soft); font-size: 0.8125rem; }
+  .illustration-pair details { border-top: 1px solid var(--color-line); }
+  .illustration-pair summary { min-height: 44px; padding-block: var(--space-3); color: var(--color-steel); font-weight: 700; cursor: pointer; }
+</style>

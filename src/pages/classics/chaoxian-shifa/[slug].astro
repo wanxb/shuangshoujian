@@ -1,0 +1,57 @@
+---
+import { getCollection } from 'astro:content';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import TextLayers from '../../../components/classics/TextLayers.astro';
+import Breadcrumbs from '../../../components/navigation/Breadcrumbs.astro';
+import { SITE } from '../../../data/site';
+import { chaoxianFormImage } from '../../../data/chaoxian-form-images';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { articleJsonLd, breadcrumbJsonLd, imageObjectJsonLd } from '../../../utils/structured-data';
+
+const slugFor = (id: string) => id.replace(/^form-\d+-/, '');
+export async function getStaticPaths() {
+  const forms = await getCollection('manualForms');
+  return forms.map((entry) => ({ params: { slug: entry.id.replace(/^form-\d+-/, '') }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const allForms = (await getCollection('manualForms')).sort((a, b) => a.data.formNumber - b.data.formNumber);
+const index = allForms.findIndex((item) => item.id === entry.id);
+const previous = allForms[index - 1];
+const next = allForms[index + 1];
+const path = `/classics/chaoxian-shifa/${slugFor(entry.id)}/`;
+const site = Astro.site ?? new URL(SITE.url);
+const description = `《武备志·朝鲜势法》二十四势第${entry.data.formNumber}势“${entry.data.formName}”，含势法图、原文与标点。`;
+const formImage = chaoxianFormImage(entry.data.formNumber, entry.data.formName);
+---
+
+<BaseLayout title={`朝鲜势法第${entry.data.formNumber}势 ${entry.data.formName}`} {description} canonicalPath={path} type="article" structuredData={[
+  breadcrumbJsonLd(site, [{ name: '首页', path: '/' }, { name: '朝鲜势法', path: '/classics/chaoxian-shifa/' }, { name: entry.data.formName, path }]),
+  articleJsonLd(site, { headline: `朝鲜势法第${entry.data.formNumber}势 ${entry.data.formName}`, description, path, author: SITE.editorLabel, dateModified: entry.data.updatedAt }),
+  imageObjectJsonLd(site, { name: `${entry.data.formName}图`, description: `《武备志·朝鲜势法》${entry.data.formName}图`, path: formImage.path, width: formImage.width, height: formImage.height, credit: '《武备志·朝鲜势法》' }),
+]}>
+  <div class="container"><Breadcrumbs items={[{ label: '朝鲜势法', href: '/classics/chaoxian-shifa/' }, { label: entry.data.formName }]} /></div>
+  <header class="section form-header"><div class="container form-header__grid"><div class="form-header__number">{String(entry.data.formNumber).padStart(2, '0')}</div><div class="stack"><p class="eyebrow">朝鲜势法二十四势</p><h1>{entry.data.formName}</h1><p class="lede">{entry.data.summary}</p></div></div></header>
+  <section class="section form-content"><div class="container form-content__grid"><figure class="form-plate"><a href={formImage.path} target="_blank" rel="noreferrer"><img src={formImage.path} width={formImage.width} height={formImage.height} alt={`${entry.data.formName}图`} /></a></figure><TextLayers originalText={entry.data.originalText} punctuatedText={entry.data.punctuatedText} /></div></section>
+  <section class="section relation-note"><div class="container reading-column"><p><strong>关系说明：</strong>本势属于《武备志·朝鲜势法》古谱索引。本站未将它与于承惠现代四段四十式中的某一动作建立一一对应。</p></div></section>
+  <section class="section form-navigation"><div class="container form-pagination"><nav aria-label="二十四势翻页">{previous ? <a href={`/classics/chaoxian-shifa/${slugFor(previous.id)}/`}><ArrowLeft aria-hidden="true" /><span><small>上一势</small>{previous.data.formName}</span></a> : <span></span>}{next && <a href={`/classics/chaoxian-shifa/${slugFor(next.id)}/`}><span><small>下一势</small>{next.data.formName}</span><ArrowRight aria-hidden="true" /></a>}</nav></div></section>
+</BaseLayout>
+
+<style>
+  .form-header { padding-top: var(--space-8); }
+  .form-header__grid { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-5); }
+  .form-header__number { color: var(--color-vermilion); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 3rem; font-weight: 800; line-height: 1; }
+  .form-content { background: var(--color-surface-muted); }
+  .form-content__grid { display: grid; grid-template-columns: minmax(18rem, 1fr) minmax(0, 2fr); gap: var(--space-10); align-items: start; }
+  .form-plate { margin: 0; }
+  .form-plate a { display: block; color: var(--color-ink); text-decoration: none; }
+  .form-plate img { width: 100%; height: auto; border: 1px solid var(--color-line-strong); background: white; }
+  .relation-note { background: var(--color-warning-soft); }
+  .form-pagination nav { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+  .form-pagination a { display: flex; min-height: 5rem; justify-content: space-between; align-items: center; gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--color-line); border-radius: var(--radius-card); color: var(--color-ink); text-decoration: none; }
+  .form-pagination a:last-child { text-align: right; }
+  .form-pagination small { display: block; color: var(--color-ink-soft); }
+  @media (max-width: 63.9375rem) { .form-content__grid { grid-template-columns: minmax(15rem, 1fr) minmax(0, 1.5fr); } }
+  @media (max-width: 47.9375rem) { .form-content__grid { grid-template-columns: 1fr; } }
+  @media (max-width: 35rem) { .form-pagination nav { grid-template-columns: 1fr; } }
+</style>

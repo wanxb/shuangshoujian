@@ -1,0 +1,82 @@
+---
+import { getCollection } from 'astro:content';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import LessonPlayer from '../../../components/learning/LessonPlayer';
+import Breadcrumbs from '../../../components/navigation/Breadcrumbs.astro';
+import { MAIN_VIDEO } from '../../../data/video-manifest';
+import { SITE } from '../../../data/site';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { formatPlayerTime } from '../../../utils/player';
+import { breadcrumbJsonLd, learningResourceJsonLd, videoObjectJsonLd } from '../../../utils/structured-data';
+
+export async function getStaticPaths() {
+  const actions = await getCollection('routineActions');
+  return actions.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const allActions = (await getCollection('routineActions')).sort((a, b) => a.data.actionNumber - b.data.actionNumber);
+const allGroups = await getCollection('actionGroups');
+const group = allGroups.find((item) => item.id === entry.data.groupId)!;
+const groupActions = group.data.actionIds.map((id) => allActions.find((action) => action.id === id)!).filter(Boolean);
+const currentIndex = allActions.findIndex((action) => action.id === entry.id);
+const previous = allActions[currentIndex - 1];
+const next = allActions[currentIndex + 1];
+const playerSegments = allActions.map((action) => ({ id: action.id, title: `第${action.data.actionNumber}式 ${action.data.subtitleTitle}`, start: action.data.start, end: action.data.end }));
+const path = `/routine/actions/${entry.id}/`;
+const site = Astro.site ?? new URL(SITE.url);
+const description = `于承惠双手剑第${entry.data.actionNumber}式“${entry.data.subtitleTitle}”视频学习页，含动作区间、视频慢放和同组导航。`;
+---
+
+<BaseLayout
+  title={`第${entry.data.actionNumber}式 ${entry.data.subtitleTitle}`}
+  {description}
+  canonicalPath={path}
+  imagePath={`/media/posters/section-${entry.data.sectionNumber}.webp`}
+  type="video.other"
+  structuredData={[
+    breadcrumbJsonLd(site, [{ name: '首页', path: '/' }, { name: '四段套路', path: '/routine/' }, { name: `第${entry.data.sectionNumber}段`, path: `/routine/section-${entry.data.sectionNumber}/` }, { name: entry.data.subtitleTitle, path }]),
+    learningResourceJsonLd(site, { name: `双手剑第${entry.data.actionNumber}式 ${entry.data.subtitleTitle}`, description, path, position: entry.data.actionNumber }),
+    videoObjectJsonLd(site, { name: entry.data.subtitleTitle, description, pagePath: path, contentPath: MAIN_VIDEO.publicSources.lowBandwidth, thumbnailPath: `/media/posters/section-${entry.data.sectionNumber}.webp`, duration: MAIN_VIDEO.duration, clips: [{ name: entry.data.subtitleTitle, start: entry.data.start, end: entry.data.end, path }] }),
+  ]}
+>
+  <div class="container"><Breadcrumbs items={[{ label: '四段套路', href: '/routine/' }, { label: `第${entry.data.sectionNumber}段`, href: `/routine/section-${entry.data.sectionNumber}/` }, { label: entry.data.subtitleTitle }]} /></div>
+  <header class="section action-header">
+    <div class="container action-header__grid">
+      <div class="action-header__number">{String(entry.data.actionNumber).padStart(2, '0')}</div>
+      <div class="stack"><p class="eyebrow">第 {entry.data.sectionNumber} 段 · 第 {group.data.groupNumber} 组</p><h1>{entry.data.subtitleTitle}</h1><span class="tabular muted">{formatPlayerTime(entry.data.start)}–{formatPlayerTime(entry.data.end)}</span></div>
+    </div>
+  </header>
+
+  <section class="section action-player-section">
+    <div class="container action-learning-grid">
+      <LessonPlayer client:load title={entry.data.subtitleTitle} sources={{ lowBandwidth: MAIN_VIDEO.publicSources.lowBandwidth }} poster={`/media/posters/section-${entry.data.sectionNumber}.webp`} segments={playerSegments} initialSegmentId={entry.id} frameRate={MAIN_VIDEO.frameRate} />
+      <aside class="group-directory" aria-labelledby="group-directory-title">
+        <p class="eyebrow">同组动作</p><h2 id="group-directory-title">{group.data.title}</h2>
+        <ol>{groupActions.map((action) => <li class:list={{ active: action.id === entry.id }}><a href={`/routine/actions/${action.id}/`} aria-current={action.id === entry.id ? 'page' : undefined}><span>{String(action.data.actionNumber).padStart(2, '0')}</span>{action.data.subtitleTitle}</a></li>)}</ol>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section"><div class="container"><nav class="action-pagination" aria-label="动作翻页">{previous ? <a href={`/routine/actions/${previous.id}/`}><ArrowLeft aria-hidden="true" /><span><small>上一式</small>{previous.data.subtitleTitle}</span></a> : <span></span>}{next && <a href={`/routine/actions/${next.id}/`}><span><small>下一式</small>{next.data.subtitleTitle}</span><ArrowRight aria-hidden="true" /></a>}</nav></div></section>
+</BaseLayout>
+
+<style>
+  .action-header { padding-top: var(--space-8); }
+  .action-header__grid { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-5); align-items: start; }
+  .action-header__number { color: var(--color-vermilion); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 3rem; font-weight: 800; line-height: 1; }
+  .action-player-section { padding-top: 0; }
+  .action-learning-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(16rem, 1fr); gap: var(--space-5); align-items: start; }
+  .group-directory { padding: var(--space-5); border-left: 3px solid var(--color-pine); background: var(--color-surface); }
+  .group-directory h2 { font-size: 1.25rem; }
+  .group-directory ol { margin: var(--space-4) 0 0; padding: 0; list-style: none; }
+  .group-directory a { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); min-height: 44px; align-items: center; border-bottom: 1px solid var(--color-line); color: var(--color-ink); text-decoration: none; }
+  .group-directory li.active a { color: var(--color-vermilion-dark); font-weight: 800; }
+  .group-directory a span { color: var(--color-ink-soft); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.8125rem; }
+  .action-pagination { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+  .action-pagination > a { display: flex; min-height: 5rem; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--color-line); border-radius: var(--radius-card); color: var(--color-ink); text-decoration: none; }
+  .action-pagination > a:last-child { text-align: right; }
+  .action-pagination small { display: block; color: var(--color-ink-soft); }
+  @media (max-width: 63.9375rem) { .action-learning-grid { grid-template-columns: 1fr; } .group-directory { border-top: 3px solid var(--color-pine); border-left: 0; } }
+  @media (max-width: 35rem) { .action-pagination { grid-template-columns: 1fr; } }
+</style>

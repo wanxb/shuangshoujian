@@ -1,0 +1,95 @@
+---
+import CourseMap from '../../components/learning/CourseMap.astro';
+import SafetyNotice from '../../components/learning/SafetyNotice.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import { SITE } from '../../data/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { breadcrumbJsonLd, learningResourceJsonLd } from '../../utils/structured-data';
+
+const site = Astro.site ?? new URL(SITE.url);
+const description = '双手剑初学准备：练习安全、训练器械、双手握持、基本站位和推荐学习顺序。';
+---
+
+<BaseLayout
+  title="开始学习"
+  {description}
+  structuredData={[
+    breadcrumbJsonLd(site, [{ name: '首页', path: '/' }, { name: '开始学习', path: '/learn/' }]),
+    learningResourceJsonLd(site, { name: '于承惠双手剑初学准备', description, path: '/learn/' }),
+  ]}
+>
+  <div class="container"><Breadcrumbs items={[{ label: '开始学习' }]} /></div>
+  <header class="section learn-header">
+    <div class="container reading-column stack">
+      <p class="eyebrow">初学第一课</p>
+      <h1>先把剑、空间与握持准备好</h1>
+      <p class="lede">双手剑的动作幅度大、路线长。进入二十法和套路前，先用低速、无刃训练器械建立安全边界。</p>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container"><SafetyNotice /></div>
+  </section>
+
+  <section class="section learn-equipment" aria-labelledby="equipment-title">
+    <div class="container learn-equipment__grid">
+      <figure>
+        <img src="/media/keyframes/action-01-start.webp" width="848" height="464" alt="于承惠双手持剑的起始姿态" />
+        <figcaption>教学影像截图，仅用于观察持剑与身体相对位置。</figcaption>
+      </figure>
+      <div class="stack reading-column">
+        <p class="eyebrow">训练器械</p>
+        <h2 id="equipment-title">选择适合慢练的双手训练剑</h2>
+        <dl class="definition-list">
+          <div><dt>剑身</dt><dd>无刃、无锐尖，不弯折开裂；初学重量以能够稳定控制起落为准。</dd></div>
+          <div><dt>剑柄</dt><dd>应容纳双手自然排列，护手和柄尾不得松动。</dd></div>
+          <div><dt>空间</dt><dd>先持剑缓慢环绕一周，确认剑尖不会触及顶灯、墙面、家具或旁人。</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="grip-title">
+    <div class="container learn-grid">
+      <div class="stack">
+        <p class="eyebrow">双手握持</p>
+        <h2 id="grip-title">先分主辅，再求转换</h2>
+        <p>视频片尾《剑论》写有“双握分清主与辅，转换灵活求自然”。首版只据字幕提出观察点，不把单帧姿态写成固定教条。</p>
+      </div>
+      <ol class="observation-list">
+        <li><strong>靠近护手的一手</strong><span>观察它如何控制剑锋方向与出入路线。</span></li>
+        <li><strong>靠近柄尾的一手</strong><span>观察它如何配合转动、牵引与发力。</span></li>
+        <li><strong>肩、肘与腕</strong><span>慢放检查是否因追求剑速而僵直或耸肩。</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section learn-path" aria-labelledby="learn-path-title">
+    <div class="container stack">
+      <div class="section-heading"><p class="eyebrow">推荐顺序</p><h2 id="learn-path-title">准备完成后，从二十法术语进入套路</h2></div>
+      <CourseMap />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .learn-header { padding-top: var(--space-8); }
+  .learn-equipment { background: var(--color-surface-muted); }
+  .learn-equipment__grid, .learn-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(18rem, 5fr); gap: var(--space-10); align-items: start; }
+  .learn-equipment figure { margin: 0; }
+  .learn-equipment img { width: 100%; aspect-ratio: 848 / 464; object-fit: cover; }
+  .learn-equipment figcaption { margin-top: var(--space-2); color: var(--color-ink-soft); font-size: 0.8125rem; }
+  .definition-list { display: grid; gap: var(--space-4); margin: 0; }
+  .definition-list div { padding-top: var(--space-3); border-top: 1px solid var(--color-line-strong); }
+  .definition-list dt { font-weight: 800; }
+  .definition-list dd { margin-top: var(--space-1); color: var(--color-ink-soft); }
+  .observation-list { display: grid; gap: var(--space-4); margin: 0; padding: 0; list-style: none; counter-reset: observations; }
+  .observation-list li { display: grid; grid-template-columns: minmax(8rem, 1fr) minmax(0, 2fr); gap: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--color-line); }
+  .observation-list span { color: var(--color-ink-soft); }
+  .learn-path { background: var(--color-pine-soft); }
+  .section-heading { max-width: 48rem; }
+  @media (max-width: 47.9375rem) {
+    .learn-equipment__grid, .learn-grid { grid-template-columns: 1fr; }
+    .observation-list li { grid-template-columns: 1fr; gap: var(--space-1); }
+  }
+</style>

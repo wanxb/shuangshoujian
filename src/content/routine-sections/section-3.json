@@ -1,0 +1,14 @@
+{
+  "title": "第三段",
+  "summary": "第三段包含两个动作组，套路动作编号为 29-31。",
+  "editorialStatus": "needs-review",
+  "sourceIds": ["video-main"],
+  "updatedAt": "2026-07-20",
+  "authorLabel": "本站整理",
+  "noindex": false,
+  "sectionNumber": 3,
+  "order": 3,
+  "actionGroupIds": ["section-3-group-1", "section-3-group-2"],
+  "start": 769,
+  "end": 811
+}

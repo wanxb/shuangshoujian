@@ -1,0 +1,74 @@
+---
+interface TranscriptSegment {
+  id: string;
+  title: string;
+  start: number;
+  transcript: string;
+}
+
+interface Props {
+  segments: TranscriptSegment[];
+  heading?: string;
+}
+
+const { segments, heading = '视频文字稿' } = Astro.props;
+
+const formatTime = (seconds: number) => {
+  const minutes = Math.floor(seconds / 60);
+  const remainder = Math.floor(seconds % 60);
+  return `${String(minutes).padStart(2, '0')}:${String(remainder).padStart(2, '0')}`;
+};
+---
+
+<section class="video-transcript" aria-labelledby="video-transcript-title">
+  <h2 id="video-transcript-title">{heading}</h2>
+  <ol>
+    {segments.map((segment) => (
+      <li id={`transcript-${segment.id}`}>
+        <h3>
+          <a href={`?t=${segment.start}#transcript-${segment.id}`}>
+            <time datetime={`PT${segment.start}S`}>{formatTime(segment.start)}</time>
+            <span>{segment.title}</span>
+          </a>
+        </h3>
+        <p>{segment.transcript}</p>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .video-transcript {
+    max-width: 72ch;
+  }
+
+  .video-transcript ol {
+    display: grid;
+    gap: var(--space-6);
+    margin: var(--space-6) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .video-transcript h3,
+  .video-transcript p {
+    margin: 0;
+  }
+
+  .video-transcript h3 a {
+    display: inline-flex;
+    gap: var(--space-3);
+    align-items: baseline;
+    color: var(--color-ink);
+  }
+
+  .video-transcript time {
+    color: var(--color-steel);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 0.875rem;
+  }
+
+  .video-transcript p {
+    margin-top: var(--space-2);
+  }
+</style>

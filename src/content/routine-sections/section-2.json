@@ -1,0 +1,14 @@
+{
+  "title": "第二段",
+  "summary": "第二段包含六个动作组，套路动作编号为 15-28。",
+  "editorialStatus": "needs-review",
+  "sourceIds": ["video-main"],
+  "updatedAt": "2026-07-20",
+  "authorLabel": "本站整理",
+  "noindex": false,
+  "sectionNumber": 2,
+  "order": 2,
+  "actionGroupIds": ["section-2-group-1", "section-2-group-2", "section-2-group-3", "section-2-group-4", "section-2-group-5", "section-2-group-6"],
+  "start": 618,
+  "end": 756
+}

@@ -1,0 +1,27 @@
+# Dependencies and build output
+node_modules/
+dist/
+.astro/
+.npm-cache/
+.pnpm-home/
+.pnpm-store/
+
+# Test and audit output
+playwright-report/
+test-results/
+coverage/
+.tmp/
+
+# Local environment and agent metadata
+.env
+.env.*.local
+.agents/
+.claude/
+
+# The 254 MB master stays local. Deployable derivatives in public/media are tracked.
+docs/IMG_4455.MP4
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+*.log

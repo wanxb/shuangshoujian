@@ -1,0 +1,48 @@
+---
+import { SITE } from '../../data/site';
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div class="stack">
+      <strong>{SITE.name}</strong>
+      <p>以公开学习与资料整理为目的，不替代线下专业指导。</p>
+    </div>
+    <nav aria-label="页脚导航">
+      <a href="/sources/">人物与资料</a>
+      <a href="/learn/">练习安全</a>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--color-line);
+    background: var(--color-surface-muted);
+    color: var(--color-ink-soft);
+  }
+
+  .site-footer__inner {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-8);
+    padding-block: var(--space-10);
+  }
+
+  .site-footer strong {
+    color: var(--color-ink);
+  }
+
+  .site-footer nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: var(--space-4);
+  }
+
+  @media (max-width: 40rem) {
+    .site-footer__inner {
+      flex-direction: column;
+    }
+  }
+</style>

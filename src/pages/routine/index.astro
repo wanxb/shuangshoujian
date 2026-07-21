@@ -1,0 +1,117 @@
+---
+import { getCollection } from 'astro:content';
+import { ArrowRight, Play } from 'lucide-react';
+import ViewTabs from '../../components/learning/ViewTabs.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import { SITE } from '../../data/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatPlayerTime } from '../../utils/player';
+import { breadcrumbJsonLd, courseJsonLd } from '../../utils/structured-data';
+
+const sections = (await getCollection('routineSections')).sort((a, b) => a.data.order - b.data.order);
+const actions = (await getCollection('routineActions')).sort((a, b) => a.data.actionNumber - b.data.actionNumber);
+const site = Astro.site ?? new URL(SITE.url);
+const description = '于承惠双手剑四段四十式学习索引，按十七个动作组呈现视频时间码和整套演示入口。';
+---
+
+<BaseLayout
+  title="四段四十式套路"
+  {description}
+  imagePath="/media/posters/full-routine.webp"
+  type="video.other"
+  structuredData={[
+    breadcrumbJsonLd(site, [{ name: '首页', path: '/' }, { name: '四段套路', path: '/routine/' }]),
+    courseJsonLd(site, { name: '于承惠双手剑四段四十式', description, path: '/routine/', provider: SITE.name }),
+  ]}
+>
+  <div class="container"><Breadcrumbs items={[{ label: '四段套路' }]} /></div>
+  <header class="section routine-header">
+    <div class="container routine-header__grid">
+      <div class="stack">
+        <p class="eyebrow">套路教学</p>
+        <h1>于承惠双手剑套路</h1>
+        <dl class="routine-numbering">
+          <div><dt>准备动作</dt><dd>预备式</dd></div>
+          <div><dt>四十式编号</dt><dd><span>01　并步接剑上挑</span><span class="routine-numbering__to">至</span><span>40　交手抱剑收势</span></dd></div>
+        </dl>
+        <div class="cluster"><a class="action-link" href="/practice/full-routine/"><Play size={18} aria-hidden="true" />整套跟练</a></div>
+      </div>
+      <figure><img src="/media/posters/full-routine.webp" width="848" height="464" alt="于承惠演示双手剑完整套路" /><figcaption>整套演示约从 15:50 开始</figcaption></figure>
+    </div>
+  </header>
+
+  <div class="container routine-tabs"><ViewTabs items={[{ label: '分段学习', href: '#sections', active: true }, { label: '四十式索引', href: '#all-actions' }, { label: '片尾歌诀', href: '#verses' }]} /></div>
+
+  <section id="sections" class="section" aria-labelledby="section-title">
+    <div class="container stack">
+      <div class="section-heading"><p class="eyebrow">分段学习</p><h2 id="section-title">从第一段依次建立动作顺序</h2></div>
+      <div class="routine-sections">
+        {sections.map((section) => (
+          <article>
+            <img src={`/media/posters/section-${section.data.sectionNumber}.webp`} width="848" height="464" alt={`于承惠示范双手剑第${section.data.sectionNumber}段`} loading="lazy" />
+            <div class="routine-sections__body">
+              <p>第 {section.data.sectionNumber} 段 · {section.data.actionGroupIds.length} 组</p>
+              <h3>{section.data.title}</h3>
+              <span>{formatPlayerTime(section.data.start ?? 0)}–{formatPlayerTime(section.data.end ?? 0)}</span>
+              <a href={`/routine/section-${section.data.sectionNumber}/`}>查看动作组<ArrowRight size={17} aria-hidden="true" /></a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="all-actions" class="section action-index" aria-labelledby="action-index-title">
+    <div class="container stack">
+      <div class="section-heading"><p class="eyebrow">完整索引</p><h2 id="action-index-title">四十式字幕名称</h2></div>
+      <ol>
+        {actions.map((action) => (
+          <li><span>{String(action.data.actionNumber).padStart(2, '0')}</span><a href={`/routine/actions/${action.id}/`}>{action.data.subtitleTitle}</a></li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section id="verses" class="section routine-verses" aria-labelledby="routine-verses-title">
+    <div class="container routine-verses__grid">
+      <div><p class="eyebrow">片尾歌诀</p><h2 id="routine-verses-title">用文字回看身、步、剑与劲路</h2></div>
+      <a href="/koujue/xingong-koujue/"><strong>单练行功歌诀</strong><span>58 句 · 17:20 起</span></a>
+      <a href="/koujue/jianlun/"><strong>特点与演练要诀歌（剑论）</strong><span>45 句 · 18:50 起</span></a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .routine-header { padding-top: var(--space-8); }
+  .routine-header__grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(22rem, 7fr); gap: var(--space-10); align-items: center; }
+  .routine-header figure { margin: 0; }
+  .routine-header img { width: 100%; aspect-ratio: 848 / 464; object-fit: cover; }
+  .routine-header figcaption { margin-top: var(--space-2); color: var(--color-ink-soft); font-size: 0.8125rem; }
+  .routine-numbering { display: grid; margin: var(--space-2) 0 0; border-top: 1px solid var(--color-line-strong); }
+  .routine-numbering > div { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: var(--space-4); align-items: baseline; padding-block: var(--space-3); border-bottom: 1px solid var(--color-line); }
+  .routine-numbering dt { color: var(--color-ink-soft); font-size: 0.8125rem; font-weight: 700; }
+  .routine-numbering dd { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; font-weight: 700; }
+  .routine-numbering__to { color: var(--color-ink-soft); font-weight: 400; }
+  .routine-tabs { margin-top: calc(-1 * var(--space-6)); }
+  .section-heading { max-width: 48rem; }
+  .routine-sections { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-4); }
+  .routine-sections article { overflow: hidden; border: 1px solid var(--color-line); border-radius: var(--radius-card); background: var(--color-surface); }
+  .routine-sections img { display: block; width: 100%; height: auto; aspect-ratio: 848 / 464; object-fit: cover; object-position: center; }
+  .routine-sections__body { display: grid; gap: var(--space-2); padding: var(--space-4); }
+  .routine-sections__body p, .routine-sections__body span { color: var(--color-ink-soft); font-size: 0.8125rem; }
+  .routine-sections__body a { display: inline-flex; min-height: 44px; align-items: center; gap: var(--space-2); font-weight: 700; }
+  .action-index { background: var(--color-surface-muted); }
+  .action-index ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; padding: 0; list-style: none; }
+  .action-index li { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: var(--space-3); align-items: center; min-height: 3.5rem; padding-inline: var(--space-3); border-bottom: 1px solid var(--color-line); }
+  .action-index li > span { color: var(--color-ink-soft); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+  .action-index a { color: var(--color-ink); font-weight: 700; }
+  .routine-verses { background: var(--color-ink); }
+  .routine-verses h2 { color: white; }
+  .routine-verses .eyebrow { color: #e9aaa0; }
+  .routine-verses__grid { display: grid; grid-template-columns: minmax(0, 2fr) repeat(2, minmax(15rem, 1fr)); gap: var(--space-6); align-items: center; }
+  .routine-verses__grid > a { display: grid; min-height: 7rem; align-content: center; gap: var(--space-2); padding: var(--space-5); border-left: 2px solid var(--color-vermilion); color: white; text-decoration: none; }
+  .routine-verses__grid > a span { color: #c9cecb; font-size: 0.875rem; }
+  @media (max-width: 63.9375rem) { .routine-sections { grid-template-columns: repeat(2, minmax(0, 1fr)); } .routine-verses__grid { grid-template-columns: 1fr 1fr; } .routine-verses__grid > div { grid-column: 1 / -1; } }
+  @media (max-width: 47.9375rem) { .routine-header__grid, .routine-verses__grid { grid-template-columns: 1fr; } .routine-verses__grid > div { grid-column: auto; } .action-index ol { grid-template-columns: 1fr; } }
+  @media (max-width: 35rem) { .routine-sections { grid-template-columns: 1fr; } .routine-numbering > div { grid-template-columns: 1fr; gap: var(--space-1); } .routine-numbering dd { display: grid; } }
+</style>

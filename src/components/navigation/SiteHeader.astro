@@ -1,0 +1,226 @@
+---
+import { SITE } from '../../data/site';
+import {
+  desktopNavigation,
+  isNavigationItemActive,
+} from '../../data/navigation';
+
+interface Props {
+  pathname: string;
+}
+
+const { pathname } = Astro.props;
+---
+
+<header class="site-header">
+  <div class="site-header__inner container">
+    <a class="site-brand" href="/" aria-label={`${SITE.name}首页`}>
+      <span class="site-brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="23" height="23" focusable="false">
+          <path class="site-brand__sword" d="M39 15 57 3" />
+          <path class="site-brand__guard" d="m34 17 8-5" />
+          <circle class="site-brand__figure" cx="31" cy="20" r="5" />
+          <path class="site-brand__figure" d="M29 25c5-2 10 1 12 6l2 7-9 8-10-5 1-9c0-3 1-6 4-7Z" />
+          <path class="site-brand__limbs" d="m28 29-3-11 9-8M35 29l-4-10 8-7" />
+          <path class="site-brand__legs" d="m29 43-15 12M37 43l14 12" />
+          <path class="site-brand__ground" d="M8 57h48" />
+        </svg>
+      </span>
+      <span>{SITE.name}</span>
+    </a>
+
+    <nav class="desktop-navigation" aria-label="主要导航">
+      {
+        desktopNavigation.map((item) => {
+          const active = isNavigationItemActive(pathname, item);
+          return (
+            <a
+              href={item.href}
+              class:list={{ 'desktop-navigation__link': true, 'is-active': active }}
+              aria-current={active ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          );
+        })
+      }
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    z-index: var(--z-header);
+    top: 0;
+    height: var(--header-height);
+    border-bottom: 1px solid var(--color-line);
+    background: rgb(247 247 244 / 94%);
+    backdrop-filter: blur(12px);
+  }
+
+  .site-header__inner {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+  }
+
+  .site-brand {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--color-ink);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .site-brand__mark {
+    display: grid;
+    flex: 0 0 2rem;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border: 1px solid var(--color-vermilion);
+    border-radius: 50%;
+  }
+
+  .site-brand__mark svg {
+    display: block;
+    overflow: visible;
+  }
+
+  .site-brand__figure {
+    fill: var(--color-ink);
+  }
+
+  .site-brand__sword,
+  .site-brand__guard,
+  .site-brand__ground,
+  .site-brand__limbs,
+  .site-brand__legs {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .site-brand__sword,
+  .site-brand__ground {
+    stroke: var(--color-vermilion);
+  }
+
+  .site-brand__sword {
+    stroke-width: 4;
+  }
+
+  .site-brand__guard,
+  .site-brand__ground {
+    stroke-width: 3;
+  }
+
+  .site-brand__guard {
+    stroke: var(--color-vermilion);
+  }
+
+  .site-brand__limbs,
+  .site-brand__legs {
+    stroke: var(--color-ink);
+  }
+
+  .site-brand__limbs {
+    stroke-width: 5;
+  }
+
+  .site-brand__legs {
+    stroke-width: 7;
+  }
+
+  .desktop-navigation {
+    display: flex;
+    height: 100%;
+    align-items: stretch;
+    gap: var(--space-1);
+  }
+
+  .desktop-navigation__link {
+    position: relative;
+    display: inline-flex;
+    min-width: 5.5rem;
+    align-items: center;
+    justify-content: center;
+    padding-inline: var(--space-3);
+    color: var(--color-ink-soft);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .desktop-navigation__link::after {
+    position: absolute;
+    right: var(--space-3);
+    bottom: 0;
+    left: var(--space-3);
+    height: 3px;
+    background: transparent;
+    content: '';
+  }
+
+  .desktop-navigation__link:hover,
+  .desktop-navigation__link.is-active {
+    color: var(--color-ink);
+  }
+
+  .desktop-navigation__link.is-active::after {
+    background: var(--color-vermilion);
+  }
+
+  @media (max-width: 56.1875rem) {
+    .site-header {
+      position: relative;
+    }
+
+    .site-header__inner {
+      justify-content: center;
+    }
+
+    .desktop-navigation {
+      display: none;
+    }
+
+    .site-brand {
+      font-size: 0.9375rem;
+    }
+  }
+
+  @media (max-width: 56.1875rem) and (orientation: landscape) and (max-height: 31.25rem) {
+    .site-header {
+      position: sticky;
+    }
+
+    .site-header__inner {
+      justify-content: space-between;
+      gap: var(--space-2);
+    }
+
+    .site-brand {
+      font-size: 0.8125rem;
+    }
+
+    .site-brand__mark {
+      display: none;
+    }
+
+    .desktop-navigation {
+      display: flex;
+      gap: 0;
+    }
+
+    .desktop-navigation__link {
+      min-width: 0;
+      padding-inline: var(--space-2);
+      font-size: 0.75rem;
+    }
+  }
+</style>

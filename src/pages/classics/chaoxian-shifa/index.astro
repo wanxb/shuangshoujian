@@ -1,0 +1,65 @@
+---
+import { getCollection } from 'astro:content';
+import { ArrowRight, CircleAlert } from 'lucide-react';
+import Breadcrumbs from '../../../components/navigation/Breadcrumbs.astro';
+import { SITE } from '../../../data/site';
+import { chaoxianFormImage } from '../../../data/chaoxian-form-images';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { absoluteUrl } from '../../../utils/seo';
+import { articleJsonLd, breadcrumbJsonLd } from '../../../utils/structured-data';
+
+const forms = (await getCollection('manualForms')).sort((a, b) => a.data.formNumber - b.data.formNumber);
+const site = Astro.site ?? new URL(SITE.url);
+const description = '《武备志》卷八十六朝鲜势法专题：序文、剑诀歌、击刺格洗术语和二十四势完整索引。古谱与于承惠现代四十式不作一一对应。';
+const pathFor = (id: string) => `/classics/chaoxian-shifa/${id.replace(/^form-\d+-/, '')}/`;
+const itemList = { '@context': 'https://schema.org', '@type': 'ItemList', name: '朝鲜势法二十四势', numberOfItems: forms.length, itemListElement: forms.map((entry) => ({ '@type': 'ListItem', position: entry.data.formNumber, name: entry.data.formName, url: absoluteUrl(pathFor(entry.id), site) })) };
+const methods = [
+  { title: '击法有五', items: '豹头击、跨左击、跨右击、翼左击、翼右击' },
+  { title: '刺法有五', items: '逆鳞刺、坦腹刺、双明刺、左夹刺、右夹刺' },
+  { title: '格法有三', items: '举鼎格、旋风格、御车格' },
+  { title: '洗法有三', items: '凤头洗、虎穴洗、腾蛟洗' },
+];
+---
+
+<BaseLayout title="《武备志·朝鲜势法》二十四势" {description} type="article" structuredData={[
+  breadcrumbJsonLd(site, [{ name: '首页', path: '/' }, { name: '古谱专题', path: '/classics/chaoxian-shifa/' }]),
+  articleJsonLd(site, { headline: '《武备志·朝鲜势法》二十四势', description, path: '/classics/chaoxian-shifa/', author: SITE.editorLabel, dateModified: '2026-07-21' }), itemList,
+]}>
+  <div class="container"><Breadcrumbs items={[{ label: '古谱专题' }]} /></div>
+  <header class="section classic-header"><div class="container classic-header__grid"><div class="stack"><h1>《武备志·朝鲜势法》</h1><p class="lede">明代茅元仪《武备志》卷八十六收入剑诀歌、初习法和二十四势图说，为理解双手剑古谱提供一条重要资料线。</p></div><blockquote>“近有好事者，得之朝鲜，其势法俱备。”<cite>《武备志》卷八十六</cite></blockquote></div></header>
+
+  <section class="section" aria-labelledby="methods-title"><div class="container stack"><div class="reading-column stack"><p class="eyebrow">初习法</p><h2 id="methods-title">古谱中的击、刺、格、洗</h2></div><div class="manual-methods">{methods.map((method) => <article><h3>{method.title}</h3><p>{method.items}</p></article>)}</div></div></section>
+
+  <section class="section manual-index" aria-labelledby="manual-index-title"><div class="container stack"><div class="manual-index__heading"><div><p class="eyebrow">完整图文索引</p><h2 id="manual-index-title">朝鲜势法二十四势</h2></div></div><ol>{forms.map((entry) => { const image = chaoxianFormImage(entry.data.formNumber, entry.data.formName); return <li><a href={pathFor(entry.id)}><img src={image.path} width={image.width} height={image.height} alt={`${entry.data.formName}图`} loading="lazy" /><span>{String(entry.data.formNumber).padStart(2, '0')}</span><strong>{entry.data.formName}</strong><small>图文详情</small><ArrowRight size={17} aria-hidden="true" /></a></li>; })}</ol></div></section>
+
+  <section class="separation-note" aria-labelledby="separation-note-title"><div class="container separation-note__grid"><CircleAlert size={20} aria-hidden="true" /><div><h2 id="separation-note-title">古谱与现代四十式不是同一套目录</h2><p>本站不把朝鲜势法二十四势与于承惠双手剑四段四十动作强行一一对应。可比较的是术语、训练思想和技术类型；具体传承关系与动作对应仍需证据。</p></div></div></section>
+</BaseLayout>
+
+<style>
+  .classic-header { padding-top: var(--space-8); }
+  .classic-header__grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(18rem, 2fr); gap: var(--space-10); align-items: end; }
+  .classic-header blockquote { margin: 0; padding: var(--space-6); border-top: 3px solid var(--color-vermilion); border-bottom: 1px solid var(--color-line); font-family: 'Noto Serif SC', 'Songti SC', SimSun, serif; font-size: 1.375rem; line-height: 1.9; }
+  .classic-header cite { display: block; margin-top: var(--space-3); color: var(--color-ink-soft); font-family: inherit; font-size: 0.8125rem; font-style: normal; }
+  .separation-note { padding-block: var(--space-6); border-top: 1px solid var(--color-line); background: var(--color-surface-muted); }
+  .separation-note__grid { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-3); max-width: 60rem; }
+  .separation-note h2 { font-size: 1rem; }
+  .separation-note p { margin-top: var(--space-2); color: var(--color-ink-soft); font-size: 0.875rem; line-height: 1.7; }
+  .manual-methods { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 2px solid var(--color-ink); }
+  .manual-methods article { padding: var(--space-5); border-bottom: 1px solid var(--color-line); }
+  .manual-methods article + article { border-left: 1px solid var(--color-line); }
+  .manual-methods h3 { font-size: 1.125rem; }
+  .manual-methods p { margin-top: var(--space-2); color: var(--color-ink-soft); }
+  .manual-index { background: var(--color-surface-muted); }
+  .manual-index__heading { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-5); align-items: end; }
+  .manual-index ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); margin: 0; padding: 0; list-style: none; }
+  .manual-index li { min-width: 0; }
+  .manual-index a { display: grid; overflow: hidden; grid-template-columns: 2.5rem minmax(0, 1fr) auto; gap: var(--space-2) var(--space-3); align-items: center; border: 1px solid var(--color-line); border-radius: var(--radius-card); background: var(--color-surface); color: var(--color-ink); text-decoration: none; }
+  .manual-index a > img { width: 100%; aspect-ratio: 4 / 3; grid-column: 1 / -1; object-fit: cover; object-position: center 30%; background: white; }
+  .manual-index a > span { padding-left: var(--space-3); color: var(--color-vermilion-dark); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.8125rem; }
+  .manual-index a > strong { padding-top: var(--space-2); }
+  .manual-index a > small { grid-column: 2; padding-bottom: var(--space-3); color: var(--color-ink-soft); }
+  .manual-index a > svg { grid-column: 3; grid-row: 2 / span 2; margin-right: var(--space-3); }
+  @media (max-width: 63.9375rem) { .manual-methods { grid-template-columns: repeat(2, minmax(0, 1fr)); } .manual-index ol { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 47.9375rem) { .classic-header__grid { grid-template-columns: 1fr; } }
+  @media (max-width: 35rem) { .manual-methods, .manual-index ol { grid-template-columns: 1fr; } .manual-methods article + article { border-left: 0; } }
+</style>

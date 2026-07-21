@@ -1,0 +1,93 @@
+---
+const techniques = [
+  { key: 'ji', title: '击', definition: '横向进攻', image: '/media/keyframes/technique-ji.webp', mark: '横' },
+  { key: 'ci', title: '刺', definition: '竖向进攻', image: '/media/keyframes/technique-ci.webp', mark: '直' },
+  { key: 'ge', title: '格', definition: '刚性防守', image: '/media/keyframes/technique-ge.webp', mark: '刚' },
+  { key: 'xi', title: '洗', definition: '柔性防守', image: '/media/keyframes/technique-xi.webp', mark: '柔' },
+] as const;
+---
+
+<div class="technique-strip">
+  {techniques.map((technique) => (
+    <a class={`technique-card technique-card--${technique.key}`} href={`/techniques/${technique.key}/`}>
+      <img src={technique.image} width="848" height="464" alt={`于承惠示范${technique.title}法`} loading="lazy" />
+      <div class="technique-card__body">
+        <span class="technique-card__mark" aria-hidden="true">{technique.mark}</span>
+        <div><h3>{technique.title}</h3><p>{technique.definition}</p></div>
+      </div>
+    </a>
+  ))}
+</div>
+
+<style>
+  .technique-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .technique-card {
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+
+  .technique-card:hover {
+    border-color: var(--color-line-strong);
+    color: var(--color-ink);
+  }
+
+  .technique-card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 848 / 464;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .technique-card__body {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    padding: var(--space-4);
+    border-top: 4px solid var(--technique-color);
+  }
+
+  .technique-card__mark {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    flex: 0 0 2rem;
+    place-items: center;
+    border: 1px solid var(--technique-color);
+    border-radius: 50%;
+    color: var(--technique-color);
+    font-weight: 800;
+  }
+
+  .technique-card h3 {
+    font-size: 1.125rem;
+  }
+
+  .technique-card p {
+    color: var(--color-ink-soft);
+    font-size: 0.875rem;
+  }
+
+  .technique-card--ji { --technique-color: var(--color-vermilion); }
+  .technique-card--ci { --technique-color: var(--color-steel); }
+  .technique-card--ge { --technique-color: var(--color-pine); }
+  .technique-card--xi { --technique-color: var(--color-warning); }
+
+  @media (max-width: 63.9375rem) {
+    .technique-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 35rem) {
+    .technique-strip { grid-template-columns: 1fr; }
+  }
+</style>

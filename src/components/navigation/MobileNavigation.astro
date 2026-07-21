@@ -1,0 +1,106 @@
+---
+import { BookOpen, Library, ScrollText, Swords } from 'lucide-react';
+import {
+  isNavigationItemActive,
+  mobileNavigation,
+} from '../../data/navigation';
+
+interface Props {
+  pathname: string;
+}
+
+const { pathname } = Astro.props;
+const icons = [BookOpen, Swords, ScrollText, Library];
+---
+
+<nav class="mobile-navigation" aria-label="移动端主要导航">
+  <div class="mobile-navigation__inner">
+    {
+      mobileNavigation.map((item, index) => {
+        const Icon = icons[index];
+        const active = isNavigationItemActive(pathname, item);
+        return (
+          <a
+            href={item.href}
+            class:list={{ 'mobile-navigation__link': true, 'is-active': active }}
+            aria-current={active ? 'page' : undefined}
+          >
+            <Icon size={21} strokeWidth={active ? 2.2 : 1.8} aria-hidden="true" />
+            <span>{item.label}</span>
+          </a>
+        );
+      })
+    }
+  </div>
+</nav>
+
+<style>
+  .mobile-navigation {
+    display: none;
+  }
+
+  @media (max-width: 56.1875rem) {
+    .mobile-navigation {
+      position: fixed;
+      z-index: var(--z-mobile-nav);
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: block;
+      border-top: 1px solid var(--color-line);
+      background: rgb(255 255 255 / 96%);
+      box-shadow: var(--shadow-toolbar);
+      padding-bottom: env(safe-area-inset-bottom);
+      backdrop-filter: blur(12px);
+    }
+
+    .mobile-navigation__inner {
+      display: grid;
+      width: min(100%, 32rem);
+      height: var(--mobile-nav-height);
+      margin-inline: auto;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .mobile-navigation__link {
+      position: relative;
+      display: grid;
+      min-width: 0;
+      min-height: 2.75rem;
+      place-content: center;
+      justify-items: center;
+      gap: 2px;
+      color: var(--color-ink-soft);
+      font-size: 0.75rem;
+      font-weight: 600;
+      line-height: 1.2;
+      text-decoration: none;
+      touch-action: manipulation;
+    }
+
+    .mobile-navigation__link::before {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 2rem;
+      height: 3px;
+      background: transparent;
+      content: '';
+      transform: translateX(-50%);
+    }
+
+    .mobile-navigation__link.is-active {
+      color: var(--color-vermilion-dark);
+    }
+
+    .mobile-navigation__link.is-active::before {
+      background: var(--color-vermilion);
+    }
+  }
+
+  @media (max-width: 56.1875rem) and (orientation: landscape) and (max-height: 31.25rem) {
+    .mobile-navigation {
+      display: none;
+    }
+  }
+</style>

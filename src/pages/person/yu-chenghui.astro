@@ -1,0 +1,53 @@
+---
+import { getEntry, getCollection } from 'astro:content';
+import { Film, ScrollText } from 'lucide-react';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import { SITE } from '../../data/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { articleJsonLd, breadcrumbJsonLd, personJsonLd } from '../../utils/structured-data';
+
+const entry = await getEntry('people', 'yu-chenghui');
+if (!entry) throw new Error('缺少于承惠人物内容');
+const allSources = await getCollection('sources');
+const site = Astro.site ?? new URL(SITE.url);
+const path = '/person/yu-chenghui/';
+const description = '于承惠生平与双手剑创传资料页，聚焦教学影像、行功歌诀署时和1996年双手剑光盘素材。';
+---
+
+<BaseLayout title="于承惠：双手剑创传与教学影像" {description} canonicalPath={path} imagePath="/media/portraits/yu-chenghui.webp" type="article" structuredData={[
+  breadcrumbJsonLd(site, [{ name: '首页', path: '/' }, { name: '人物与资料', path: '/sources/' }, { name: '于承惠', path }]),
+  personJsonLd(site, { name: entry.data.fullName, description: entry.data.summary, path, birthDate: entry.data.born }),
+  articleJsonLd(site, { headline: '于承惠：双手剑创传与教学影像', description, path, author: SITE.editorLabel, dateModified: entry.data.updatedAt }),
+]}>
+  <div class="container"><Breadcrumbs items={[{ label: '人物与资料', href: '/sources/' }, { label: '于承惠' }]} /></div>
+  <header class="section person-header">
+    <div class="container person-header__grid">
+      <div class="stack"><p class="eyebrow">人物与创传背景</p><h1>于承惠</h1><p class="lede">{entry.data.summary}</p></div>
+      <figure><img src="/media/portraits/yu-chenghui.webp" width="1272" height="696" alt="于承惠正面人物像" /></figure>
+    </div>
+  </header>
+
+  <section class="section person-focus" aria-labelledby="focus-title"><div class="container person-focus__grid"><article><Film size={24} aria-hidden="true" /><h2 id="focus-title">教学影像</h2><p>片中由于承惠重点讲解击、刺、格、洗四法、四段四十式，并展示整套套路；另有二十法资料图可供术语查阅。</p><a href="/practice/full-routine/">观看完整教学章节</a></article><article><ScrollText size={24} aria-hidden="true" /><h2>片尾歌诀</h2><p>《双手剑》单练行功歌诀字幕署“于承惠，1979年6月于宁夏”。</p><a href="/koujue/">阅读两篇歌诀</a></article></div></section>
+
+  <section class="section" aria-labelledby="timeline-title"><div class="container timeline-grid"><div class="stack"><p class="eyebrow">生平线索</p><h2 id="timeline-title">人物年表</h2></div><ol>{entry.data.timeline.map((item) => <li><time>{item.dateLabel}</time><div><div class="timeline-title"><h3>{item.title}</h3></div><p>{item.description}</p><small>来源：{item.sourceIds.map((id) => allSources.find((source) => source.id === id)?.data.title).filter(Boolean).join('；')}</small></div></li>)}</ol></div></section>
+</BaseLayout>
+
+<style>
+  .person-header { padding-top: var(--space-8); }
+  .person-header__grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(22rem, 7fr); gap: var(--space-10); align-items: center; }
+  .person-header figure { margin: 0; }
+  .person-header img { display: block; width: 100%; height: auto; aspect-ratio: 848 / 464; object-fit: cover; }
+  .person-focus { background: var(--color-ink); color: white; }
+  .person-focus__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-8); }
+  .person-focus article { display: grid; gap: var(--space-3); padding-left: var(--space-5); border-left: 3px solid var(--color-vermilion); }
+  .person-focus h2 { color: white; font-size: 1.375rem; }
+  .person-focus a { color: #d5e5eb; font-weight: 700; }
+  .timeline-grid { display: grid; grid-template-columns: minmax(13rem, 1fr) minmax(0, 2fr); gap: var(--space-10); align-items: start; }
+  .timeline-grid ol { margin: 0; padding: 0; border-top: 2px solid var(--color-ink); list-style: none; }
+  .timeline-grid li { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: var(--space-5); padding-block: var(--space-5); border-bottom: 1px solid var(--color-line); }
+  .timeline-grid time { color: var(--color-vermilion-dark); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-weight: 800; }
+  .timeline-title h3 { font-size: 1.125rem; }
+  .timeline-grid li p { margin-top: var(--space-2); }
+  .timeline-grid li small { display: block; margin-top: var(--space-2); color: var(--color-ink-soft); }
+  @media (max-width: 47.9375rem) { .person-header__grid, .timeline-grid { grid-template-columns: 1fr; } .person-focus__grid { grid-template-columns: 1fr; } }
+</style>

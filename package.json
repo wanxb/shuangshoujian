@@ -1,0 +1,54 @@
+{
+  "name": "yu-chenghui-sword-learning-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "pnpm run validate:content && cross-env ASTRO_TELEMETRY_DISABLED=1 astro check && cross-env ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "build:production": "node scripts/validate-release-environment.mjs && cross-env STRICT_CONTENT=1 pnpm run build",
+    "preview": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "check": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro check",
+    "validate:content": "node scripts/validate-content.mjs",
+    "validate:release-env": "node scripts/validate-release-environment.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:update": "playwright test --update-snapshots",
+    "check:performance": "node scripts/check-performance-budget.mjs",
+    "check:release": "node scripts/check-release-candidate.mjs",
+    "audit:lighthouse": "node scripts/run-lighthouse.mjs",
+    "media:images": "node scripts/media/extract-images.mjs",
+    "media:manifest": "node scripts/media/generate-manifest.mjs",
+    "media:illustrations": "python scripts/media/generate-illustration-samples.py",
+    "media:assets": "pnpm run media:images && pnpm run media:manifest",
+    "media:dev": "node scripts/media/process-video.mjs && pnpm run media:assets",
+    "media:production": "node scripts/media/process-video.mjs --production && pnpm run media:assets"
+  },
+  "dependencies": {
+    "@astrojs/react": "^6.0.1",
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^7.1.1",
+    "lucide-react": "^1.25.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.5",
+    "@playwright/test": "^1.61.1",
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "axe-core": "^4.11.0",
+    "cross-env": "^10.1.0",
+    "ffmpeg-static": "^5.3.0",
+    "gray-matter": "^4.0.3",
+    "lighthouse": "^13.4.0",
+    "typescript": "^5.9.0",
+    "vitest": "^4.1.10"
+  }
+}

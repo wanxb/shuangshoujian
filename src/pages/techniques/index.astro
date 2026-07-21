@@ -1,0 +1,83 @@
+---
+import { getCollection } from 'astro:content';
+import TechniqueStrip from '../../components/learning/TechniqueStrip.astro';
+import TwentyMethodsGrid from '../../components/learning/TwentyMethodsGrid.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import { SWORD_TECHNIQUE_CLOSING, SWORD_TECHNIQUE_MNEMONIC, SWORD_TECHNIQUES } from '../../data/sword-techniques';
+import { SITE } from '../../data/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { breadcrumbJsonLd, learningResourceJsonLd } from '../../utils/structured-data';
+
+const techniques = (await getCollection('techniques'))
+  .filter((entry) => entry.data.category === 'core-technique')
+  .sort((a, b) => a.data.order - b.data.order);
+const site = Astro.site ?? new URL(SITE.url);
+const description = '于承惠双手剑二十法完整索引：抽、带、云、抹、提、点、崩、擦、刺、击、绞、截、斩、格、劈、挑、拨、挂、锉、洗；击刺格洗另有视频慢放课程。';
+const methodList = { '@context': 'https://schema.org', '@type': 'ItemList', name: '于承惠双手剑二十法', numberOfItems: SWORD_TECHNIQUES.length, itemListElement: SWORD_TECHNIQUES.map((method, index) => ({ '@type': 'ListItem', position: index + 1, name: method.name, description: method.verse })) };
+---
+
+<BaseLayout
+  title="双手剑基本技法"
+  {description}
+  structuredData={[
+    breadcrumbJsonLd(site, [{ name: '首页', path: '/' }, { name: '基本技法', path: '/techniques/' }]),
+    learningResourceJsonLd(site, { name: '于承惠双手剑二十法', description, path: '/techniques/' }),
+    methodList,
+  ]}
+>
+  <div class="container"><Breadcrumbs items={[{ label: '基本技法' }]} /></div>
+  <header class="section technique-header">
+    <div class="container reading-column stack">
+      <p class="eyebrow">基本技法</p>
+      <h1>双手剑二十法</h1>
+      <p class="lede">本页完整收录双手剑二十法，并为击、刺、格、洗四种主要剑法提供慢放课程。</p>
+    </div>
+  </header>
+
+  <section class="section method-overview" aria-labelledby="methods-title">
+    <div class="container stack">
+      <div class="reading-column stack"><p class="eyebrow">完整索引</p><h2 id="methods-title">二十法名称与要义</h2><blockquote>{SWORD_TECHNIQUE_MNEMONIC}</blockquote></div>
+      <TwentyMethodsGrid />
+      <p class="closing-verse">{SWORD_TECHNIQUE_CLOSING}</p>
+    </div>
+  </section>
+
+  <section class="section technique-index" aria-labelledby="lesson-title">
+    <div class="container stack">
+      <div class="reading-column stack"><h2 id="lesson-title">击、刺、格、洗四项慢放课程</h2><p>分别从方向、攻防与刚柔性质观察四种剑法。</p></div>
+      <TechniqueStrip />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="comparison-title">
+    <div class="container stack">
+      <div class="reading-column stack">
+        <h2 id="comparison-title">四种主要剑法的方向与性质</h2>
+      </div>
+      <div class="technique-table-wrap">
+        <table>
+          <thead><tr><th scope="col">技法</th><th scope="col">技法定义</th><th scope="col">观察要点</th></tr></thead>
+          <tbody>
+            {techniques.map((entry) => (
+              <tr><th scope="row"><a href={`/techniques/${entry.data.key}/`}>{entry.data.title}</a></th><td>{entry.data.definition}</td><td>{entry.data.keyPoints[0]}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .technique-header { padding-top: var(--space-8); }
+  .method-overview { background: var(--color-surface-muted); }
+  .method-overview blockquote { margin: 0; padding-block: var(--space-4); border-block: 1px solid var(--color-line-strong); font-family: 'Noto Serif SC', 'Songti SC', SimSun, serif; font-size: 1.25rem; line-height: 1.9; }
+  .closing-verse { padding: var(--space-4); border-left: 3px solid var(--color-vermilion); background: var(--color-paper); font-family: 'Noto Serif SC', 'Songti SC', SimSun, serif; line-height: 1.9; }
+  .technique-index { background: var(--color-surface-muted); }
+  .technique-table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; background: var(--color-surface); }
+  th, td { padding: var(--space-4); border-bottom: 1px solid var(--color-line); text-align: left; vertical-align: top; }
+  thead th { color: var(--color-ink-soft); font-size: 0.8125rem; }
+  tbody th { font-size: 1.125rem; }
+  tbody td:nth-child(2) { min-width: 9rem; font-weight: 700; }
+</style>

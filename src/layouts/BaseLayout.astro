@@ -1,0 +1,65 @@
+---
+import MobileNavigation from '../components/navigation/MobileNavigation.astro';
+import SiteHeader from '../components/navigation/SiteHeader.astro';
+import SiteFooter from '../components/layout/SiteFooter.astro';
+import SeoHead from '../components/seo/SeoHead.astro';
+import { SITE } from '../data/site';
+import { websiteJsonLd } from '../utils/structured-data';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  imagePath?: string;
+  noindex?: boolean;
+  type?: 'website' | 'article' | 'video.other';
+  structuredData?: Record<string, unknown>[];
+}
+
+const {
+  title = SITE.name,
+  description = SITE.description,
+  canonicalPath = Astro.url.pathname,
+  imagePath,
+  noindex,
+  type,
+  structuredData = [],
+} = Astro.props;
+const pathname = Astro.url.pathname;
+const site = Astro.site ?? new URL(SITE.url);
+const jsonLd = pathname === '/'
+  ? [websiteJsonLd(site, SITE.name, SITE.description), ...structuredData]
+  : structuredData;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f7f4" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <SeoHead
+      {title}
+      {description}
+      {canonicalPath}
+      {imagePath}
+      {noindex}
+      {type}
+      structuredData={jsonLd}
+    />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到正文</a>
+    <div class="site-shell">
+      <SiteHeader pathname={pathname} />
+      <main id="main-content" class="site-main" tabindex="-1">
+        <slot />
+      </main>
+      <SiteFooter />
+      <MobileNavigation pathname={pathname} />
+    </div>
+  </body>
+</html>
