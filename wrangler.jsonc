@@ -1,5 +1,10 @@
 {
   "name": "shuangshoujian",
   "compatibility_date": "2026-07-21",
-  "pages_build_output_dir": "./dist"
+  "pages_build_output_dir": "./dist",
+  "vars": {
+    "PUBLIC_SITE_URL": "https://ssj.bbing.xyz",
+    "PUBLIC_MEDIA_BASE_URL": "https://media.ssj.bbing.xyz",
+    "PUBLIC_VIDEO_ATTRIBUTION": "于承惠先生双手剑教学影像，用于公开科普与分段学习"
+  }
 }
