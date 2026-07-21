@@ -1,7 +1,6 @@
 const errors = [];
 const siteUrl = process.env.PUBLIC_SITE_URL?.trim() ?? '';
 const mediaBaseUrl = process.env.PUBLIC_MEDIA_BASE_URL?.trim() ?? '';
-const contactEmail = process.env.PUBLIC_CONTACT_EMAIL?.trim() ?? '';
 const attribution = process.env.PUBLIC_VIDEO_ATTRIBUTION?.trim() ?? '';
 
 try {
@@ -19,10 +18,6 @@ if (mediaBaseUrl) {
   } catch {
     if (!mediaBaseUrl.startsWith('/')) errors.push('PUBLIC_MEDIA_BASE_URL 必须是 HTTPS URL 或站内绝对路径');
   }
-}
-
-if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)) {
-  errors.push('PUBLIC_CONTACT_EMAIL 必须是有效的公开勘误邮箱');
 }
 
 if (!attribution || /待补充|TODO|TBD/i.test(attribution)) {

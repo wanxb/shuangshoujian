@@ -22,7 +22,7 @@ pnpm run build
 pnpm run check:release
 ```
 
-公开部署前复制 `.env.example` 中的配置，并设置真实的站点地址、联系方式和视频来源说明：
+公开部署前复制 `.env.example` 中的配置，并设置真实的站点地址、媒体地址和视频来源说明：
 
 ```powershell
 pnpm run build:production
@@ -33,6 +33,31 @@ pnpm run build:production
 - `public/media/` 保存网站直接使用的图片和低码率视频，应随代码提交。
 - `docs/IMG_4455.MP4` 是本地教学母版，体积约 254 MB，已被 Git 忽略。
 - 需要重新生成海报、关键帧或视频时，使用 `pnpm run media:dev`；详细参数见 `scripts/media/README.md`。
+
+## Cloudflare 部署
+
+- Pages 项目：`shuangshoujian`
+- Pages 域名：`https://ssj.bbing.xyz`
+- R2 存储桶：`shuangshoujian`
+- 建议的 R2 自定义域名：`https://media.ssj.bbing.xyz`
+
+先在 R2 的“自定义域”中绑定 `media.ssj.bbing.xyz`，然后上传低码率视频：
+
+```powershell
+pnpm run deploy:r2
+```
+
+Cloudflare Pages 使用以下构建设置：
+
+```text
+Production branch: main
+Build command: pnpm run build:cloudflare
+Build output directory: dist
+Node.js version: 22.16.0
+pnpm version: 11.9.0
+```
+
+将 `.env.production.example` 中的变量配置到 Pages 的生产环境。Git 集成会自动部署；也可以在已登录 Wrangler 后运行 `pnpm run deploy:pages`。
 
 ## 项目结构
 

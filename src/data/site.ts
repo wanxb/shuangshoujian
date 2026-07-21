@@ -6,7 +6,6 @@ export const SITE = {
   url: import.meta.env.PUBLIC_SITE_URL || 'http://localhost:4321',
   mediaBaseUrl: import.meta.env.PUBLIC_MEDIA_BASE_URL || '/media',
   editorLabel: import.meta.env.PUBLIC_EDITOR_LABEL || '本站整理',
-  contactEmail: import.meta.env.PUBLIC_CONTACT_EMAIL || '',
   videoAttribution:
     import.meta.env.PUBLIC_VIDEO_ATTRIBUTION || '来源与授权说明待补充',
 } as const;

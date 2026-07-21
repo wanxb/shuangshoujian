@@ -1,4 +1,7 @@
 import type { TimedSegment } from '../types/content';
+import { SITE } from './site';
+
+const mediaUrl = (filename: string) => `${SITE.mediaBaseUrl.replace(/\/+$/, '')}/${filename}`;
 
 export const MAIN_VIDEO = {
   id: 'yu-chenghui-main',
@@ -9,8 +12,8 @@ export const MAIN_VIDEO = {
   frameRate: 19.9997,
   sourcePath: 'docs/IMG_4455.MP4',
   publicSources: {
-    standard: '/media/yu-chenghui-shuangshoujian.mp4',
-    lowBandwidth: '/media/yu-chenghui-shuangshoujian-low.mp4',
+    standard: mediaUrl('yu-chenghui-shuangshoujian.mp4'),
+    lowBandwidth: mediaUrl('yu-chenghui-shuangshoujian-low.mp4'),
     poster: '/media/posters/full-routine.webp',
   },
 } as const;

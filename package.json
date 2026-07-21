@@ -5,12 +5,13 @@
   "type": "module",
   "packageManager": "pnpm@11.9.0",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=22.13.0"
   },
   "scripts": {
     "dev": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro dev",
     "build": "pnpm run validate:content && cross-env ASTRO_TELEMETRY_DISABLED=1 astro check && cross-env ASTRO_TELEMETRY_DISABLED=1 astro build",
     "build:production": "node scripts/validate-release-environment.mjs && cross-env STRICT_CONTENT=1 pnpm run build",
+    "build:cloudflare": "pnpm run build:production && node scripts/cloudflare/prepare-pages.mjs",
     "preview": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro preview",
     "check": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro check",
     "validate:content": "node scripts/validate-content.mjs",
@@ -27,7 +28,10 @@
     "media:illustrations": "python scripts/media/generate-illustration-samples.py",
     "media:assets": "pnpm run media:images && pnpm run media:manifest",
     "media:dev": "node scripts/media/process-video.mjs && pnpm run media:assets",
-    "media:production": "node scripts/media/process-video.mjs --production && pnpm run media:assets"
+    "media:production": "node scripts/media/process-video.mjs --production && pnpm run media:assets",
+    "deploy:r2": "npx --yes wrangler@4 r2 object put shuangshoujian/yu-chenghui-shuangshoujian-low.mp4 --file public/media/yu-chenghui-shuangshoujian-low.mp4 --content-type video/mp4 --remote",
+    "deploy:pages": "pnpm run build:cloudflare && npx --yes wrangler@4 pages deploy dist --project-name shuangshoujian --branch main",
+    "deploy": "pnpm run deploy:pages"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.1",
