@@ -14,7 +14,7 @@ export const SWORD_TECHNIQUES: SwordTechnique[] = [
   { key: 'ti', name: '提', verse: '双手一提遮半身，贵在争锋一瞬间。' },
   { key: 'dian', name: '点', verse: '点中带挑人难识，欲奔筋脉刃须偏。' },
   { key: 'beng', name: '崩', verse: '崩动犀利刃须偏，更要挡取臂和腕。' },
-  { key: 'ca', name: '擦', verse: '擦取腋下并全身，双手合力不要单。' },
+  { key: 'liao', name: '撩', verse: '撩取腋下并全身，双手合力不要单。' },
   { key: 'ci', name: '刺', verse: '刺如长针使不弯，凶锋一线意要全。', lessonKey: 'ci' },
   { key: 'ji', name: '击', verse: '抖动击出脆而快，恰似扬手甩大鞭。', lessonKey: 'ji' },
   { key: 'jiao', name: '绞', verse: '绞取敌腕实中虚，扬手剑落是本源。' },
@@ -33,5 +33,5 @@ export const SWORD_TECHNIQUE_GROUPS = Array.from({ length: 4 }, (_, index) =>
   SWORD_TECHNIQUES.slice(index * 5, index * 5 + 5),
 );
 
-export const SWORD_TECHNIQUE_MNEMONIC = '抽带云抹提，点崩擦刺击，绞截斩格劈，挑拨挂锉洗。';
+export const SWORD_TECHNIQUE_MNEMONIC = '抽带云抹提，点崩撩刺击，绞截斩格劈，挑拨挂锉洗。';
 export const SWORD_TECHNIQUE_CLOSING = '以上剑法二十全，朝夕磨炼勿畏艰，习至炉火纯青日，轨迹处处皆是剑。';

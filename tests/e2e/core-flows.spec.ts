@@ -53,7 +53,7 @@ test('二十法完整显示且四项主要剑法可进入课程', async ({ page 
   await page.goto('/techniques/');
   await expect(page.getByRole('heading', { level: 1, name: '双手剑二十法' })).toBeVisible();
   await expect(page.locator('.methods-grid > li')).toHaveCount(20);
-  await expect(page.getByText('抽带云抹提，点崩擦刺击，绞截斩格劈，挑拨挂锉洗。')).toBeVisible();
+  await expect(page.getByText('抽带云抹提，点崩撩刺击，绞截斩格劈，挑拨挂锉洗。')).toBeVisible();
   await page.getByRole('link', { name: '观看击法视频讲解' }).click();
   await expect(page).toHaveURL(/\/techniques\/ji\/$/);
 });

@@ -12,7 +12,7 @@ const techniques = (await getCollection('techniques'))
   .filter((entry) => entry.data.category === 'core-technique')
   .sort((a, b) => a.data.order - b.data.order);
 const site = Astro.site ?? new URL(SITE.url);
-const description = '于承惠双手剑二十法完整索引：抽、带、云、抹、提、点、崩、擦、刺、击、绞、截、斩、格、劈、挑、拨、挂、锉、洗；击刺格洗另有视频慢放课程。';
+const description = '于承惠双手剑二十法完整索引：抽、带、云、抹、提、点、崩、撩、刺、击、绞、截、斩、格、劈、挑、拨、挂、锉、洗；击刺格洗另有视频慢放课程。';
 const methodList = { '@context': 'https://schema.org', '@type': 'ItemList', name: '于承惠双手剑二十法', numberOfItems: SWORD_TECHNIQUES.length, itemListElement: SWORD_TECHNIQUES.map((method, index) => ({ '@type': 'ListItem', position: index + 1, name: method.name, description: method.verse })) };
 ---
 
